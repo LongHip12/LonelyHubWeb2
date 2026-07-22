@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lonely Hub — The Next Generation Of Powerful Roblox Script Hub</title>
+<meta name="description" content="The Next Generation Of Powerful Roblox Script Hub." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/main.css?v=6" />
+<link rel="stylesheet" href="/static/extras.css?v=6" />
+</head>
+<body>
+
+<div class="grid-overlay"></div>
+
+<header id="site-header">
+  <div class="hdr-inner">
+    <a class="logo" href="#hero" onclick="nav('#hero');return false">
+      <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="LH" class="logo-img"
+        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2238%22 height=%2238%22%3E%3Crect fill=%22%238b0000%22 width=%2238%22 height=%2238%22 rx=%229%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2214%22 font-weight=%22bold%22%3ELH%3C/text%3E%3C/svg%3E'" />
+      <span class="logo-name">Lonely Hub</span>
+    </a>
+    <nav class="desk-nav" id="desk-nav">
+      <button onclick="nav('#hero')">Home</button>
+      <button onclick="window.location.href='/getkey'">Get Key</button>
+      <button onclick="nav('#scripts')">Scripts</button>
+      <button onclick="nav('#showcase')">Videos</button>
+      <button onclick="nav('#features')">Features</button>
+      <button onclick="nav('#faqs')">FAQs</button>
+    </nav>
+    <button class="hamburger" onclick="openMenu()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<div id="menu-backdrop" class="menu-backdrop" onclick="closeMenu()"></div>
+<div id="side-menu" class="side-menu glass-strong">
+  <div class="sm-header">
+    <span class="sm-title">Navigation</span>
+    <button class="sm-close" onclick="closeMenu()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="sm-nav">
+    <button onclick="nav('#hero');closeMenu()">Home</button>
+    <button onclick="window.location.href='/getkey'">Get Key</button>
+    <button onclick="window.location.href='/mykeys'">My Keys</button>
+    <button onclick="nav('#scripts');closeMenu()">Scripts</button>
+    <button onclick="nav('#showcase');closeMenu()">Videos</button>
+    <button onclick="nav('#features');closeMenu()">Features</button>
+    <button onclick="nav('#faqs');closeMenu()">FAQs</button>
+    <button onclick="nav('#feedback');closeMenu()">Feedback</button>
+    <button onclick="nav('#games');closeMenu()">Games</button>
+  </nav>
+  <div class="sm-foot">
+    <a href="https://github.com/LongHip12" target="_blank" class="sm-gh">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      GitHub
+    </a>
+    <a href="https://dsc.gg/lonelyhub" target="_blank" class="sm-dc">
+      <svg width="15" height="15" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.7.4a.2.2 0 0 0-.2.1 40.8 40.8 0 0 0-1.8 3.7 54.1 54.1 0 0 0-16.3 0A37.3 37.3 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 11 4.9a.2.2 0 0 0-.1.1C1.6 18.6-.9 31.9.3 45.1c0 .1.1.1.1.2a58.9 58.9 0 0 0 17.8 9 .2.2 0 0 0 .3-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.6 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.2 36.2 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .3.1 58.7 58.7 0 0 0 17.8-9 .2.2 0 0 0 .1-.2C72.9 29.9 69.3 17.1 60.2 5a.2.2 0 0 0-.1-.1zM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2zm23.6 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2z"/></svg>
+      Discord
+    </a>
+  </div>
+</div>
+
+<section id="hero" class="hero-sec">
+  <div class="orb" style="width:420px;height:420px;top:8%;left:-4%;opacity:.28;background:radial-gradient(circle,#ff0000 0%,transparent 70%)"></div>
+  <div class="orb" style="width:320px;height:320px;bottom:12%;right:-2%;opacity:.18;background:radial-gradient(circle,#dc143c 0%,transparent 70%)"></div>
+  <div class="hero-content">
+    <div class="hero-top">
+      <img class="hero-logo" src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub"
+        onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2272%22 height=%2272%22%3E%3Crect fill=%22%238b0000%22 width=%2272%22 height=%2272%22 rx=%2216%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2224%22 font-weight=%22bold%22%3ELH%3C/text%3E%3C/svg%3E'" />
+      <h2 class="hero-brand">Lonely Hub</h2>
+    </div>
+    <h1 class="hero-h1">The Next Generation Of<br><span class="grad-text">Powerful Roblox Script Hub</span></h1>
+    <p class="hero-sub">Unleash the ultimate scripting experience. Fast, powerful, and undetectable — crafted for the elite Roblox player.</p>
+    <div class="hero-btns">
+      <a href="/getkey" class="btn btn-red">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+        Get Key
+      </a>
+      <button class="btn btn-red" onclick="nav('#scripts')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Get Script
+      </button>
+      <a href="https://dsc.gg/lonelyhub" target="_blank" class="btn btn-discord">
+        <svg width="18" height="18" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.7.4a.2.2 0 0 0-.2.1 40.8 40.8 0 0 0-1.8 3.7 54.1 54.1 0 0 0-16.3 0A37.3 37.3 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 11 4.9a.2.2 0 0 0-.1.1C1.6 18.6-.9 31.9.3 45.1c0 .1.1.1.1.2a58.9 58.9 0 0 0 17.8 9 .2.2 0 0 0 .3-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.6 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.2 36.2 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .3.1 58.7 58.7 0 0 0 17.8-9 .2.2 0 0 0 .1-.2C72.9 29.9 69.3 17.1 60.2 5a.2.2 0 0 0-.1-.1zM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2zm23.6 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2z"/></svg>
+        Discord
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-n">50K+</span><span class="stat-l">Active Users</span></div>
+      <div class="stat"><span class="stat-n">100+</span><span class="stat-l">Scripts</span></div>
+      <div class="stat"><span class="stat-n">30+</span><span class="stat-l">Games</span></div>
+      <div class="stat"><span class="stat-n">99.9%</span><span class="stat-l">Uptime</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-ring"><div class="scroll-dot"></div></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<section id="faqs">
+  <div class="orb" style="width:260px;height:260px;right:0;top:0;opacity:.09;background:radial-gradient(circle,#ff0000 0%,transparent 70%)"></div>
+  <div class="sec-wrap" style="max-width:800px">
+    <div class="sec-head">
+      <span class="tag">Got Questions?</span>
+      <h2>Frequently Asked <span class="grad-text">Questions</span></h2>
+      <p>Everything you need to know about Lonely Hub</p>
+    </div>
+    <div id="faq-list" class="faq-list"></div>
+    <p class="faq-footer">Still have questions? <a href="https://dsc.gg/lonelyhub" target="_blank">Join our Discord</a></p>
+  </div>
+</section>
+
+<section id="feedback" style="padding:80px 0;overflow:hidden">
+  <div class="orb" style="width:280px;height:280px;left:25%;top:50%;opacity:.08;background:radial-gradient(circle,#dc143c 0%,transparent 70%)"></div>
+  <div class="sec-wrap">
+    <div class="sec-head">
+      <span class="tag">Community</span>
+      <h2>What Players <span class="grad-text">Say</span></h2>
+      <p>Real reviews from real Roblox players</p>
+    </div>
+  </div>
+  <div class="mq-wrap" style="margin-bottom:14px"><div class="mq-track mq-right" id="rev-row1"></div></div>
+  <div class="mq-wrap"><div class="mq-track mq-left" id="rev-row2"></div></div>
+</section>
+
+<section id="showcase" style="padding:80px 0;overflow:hidden">
+  <div class="orb" style="width:260px;height:260px;right:0;bottom:0;opacity:.09;background:radial-gradient(circle,#ff4444 0%,transparent 70%)"></div>
+  <div class="sec-wrap">
+    <div class="sec-head">
+      <span class="tag">See It In Action</span>
+      <h2>Script <span class="grad-text">Showcase</span></h2>
+      <p>Watch our scripts dominate every game</p>
+    </div>
+  </div>
+  <div class="mq-wrap"><div class="mq-track mq-left" id="showcase-track" style="padding:0 16px"></div></div>
+</section>
+
+<section id="features">
+  <div class="orb" style="width:360px;height:360px;left:0;top:50%;opacity:.08;background:radial-gradient(circle,#8b0000 0%,transparent 70%)"></div>
+  <div class="sec-wrap">
+    <div class="sec-head">
+      <span class="tag">What We Offer</span>
+      <h2>Features Of Our <span class="grad-text">Hub</span></h2>
+      <p>Everything you need to dominate Roblox</p>
+    </div>
+    <div id="feat-grid" class="feat-grid"></div>
+  </div>
+</section>
+
+<section id="games" style="padding:80px 0;overflow:hidden">
+  <div class="orb" style="width:250px;height:250px;right:25%;top:0;opacity:.09;background:radial-gradient(circle,#ff6600 0%,transparent 70%)"></div>
+  <div class="sec-wrap">
+    <div class="sec-head">
+      <span class="tag">Compatibility</span>
+      <h2>Games <span class="grad-text">Support</span></h2>
+      <p>Scripts for the most popular Roblox games</p>
+    </div>
+  </div>
+  <div class="mq-wrap"><div class="mq-track mq-right" id="games-track" style="padding:0 16px"></div></div>
+</section>
+
+<section id="scripts">
+  <div class="orb" style="width:280px;height:280px;right:0;top:25%;opacity:.09;background:radial-gradient(circle,#8b0000 0%,transparent 70%)"></div>
+  <div class="sec-wrap" style="max-width:860px">
+    <div class="sec-head">
+      <span class="tag">Ready To Use</span>
+      <h2>Our <span class="grad-text">Scripts</span></h2>
+      <p>Copy and paste into your executor — instant power</p>
+    </div>
+    <div id="script-list" class="script-list"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="ft-inner">
+    <div class="ft-top">
+      <div class="ft-brand">
+        <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="LH"
+          onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2234%22 height=%2234%22%3E%3Crect fill=%22%238b0000%22 width=%2234%22 height=%2234%22 rx=%228%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2212%22 font-weight=%22bold%22%3ELH%3C/text%3E%3C/svg%3E'" />
+        <div><div class="ft-name">Lonely Hub</div><div class="ft-sub">The Next Gen Script Hub</div></div>
+      </div>
+      <div class="ft-socials">
+        <a href="https://github.com/LongHip12" target="_blank" class="soc-btn soc-gh">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a href="https://youtube.com/@LONGHI1P2" target="_blank" class="soc-btn soc-yt">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          YouTube
+        </a>
+        <a href="https://tiktok.com/@longhip2012" target="_blank" class="soc-btn soc-tt">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.16 8.16 0 004.77 1.52V6.72s-.87.02-2-.03z"/></svg>
+          TikTok
+        </a>
+        <a href="https://dsc.gg/lonelyhub" target="_blank" class="soc-btn soc-dc">
+          <svg width="14" height="14" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.6 58.6 0 0 0 45.7.4a.2.2 0 0 0-.2.1 40.8 40.8 0 0 0-1.8 3.7 54.1 54.1 0 0 0-16.3 0A37.3 37.3 0 0 0 25.6.5a.2.2 0 0 0-.2-.1A58.4 58.4 0 0 0 11 4.9a.2.2 0 0 0-.1.1C1.6 18.6-.9 31.9.3 45.1c0 .1.1.1.1.2a58.9 58.9 0 0 0 17.8 9 .2.2 0 0 0 .3-.1 42 42 0 0 0 3.6-5.9.2.2 0 0 0-.1-.3 38.7 38.7 0 0 1-5.5-2.6.2.2 0 0 1 0-.4l1.1-.9a.2.2 0 0 1 .2 0c11.6 5.3 24.1 5.3 35.6 0a.2.2 0 0 1 .2 0l1.1.9a.2.2 0 0 1 0 .4 36.2 36.2 0 0 1-5.5 2.6.2.2 0 0 0-.1.3 47.1 47.1 0 0 0 3.6 5.9.2.2 0 0 0 .3.1 58.7 58.7 0 0 0 17.8-9 .2.2 0 0 0 .1-.2C72.9 29.9 69.3 17.1 60.2 5a.2.2 0 0 0-.1-.1zM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2zm23.6 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2c3.6 0 6.5 3.3 6.4 7.2 0 4-2.8 7.2-6.4 7.2z"/></svg>
+          Discord
+        </a>
+      </div>
+    </div>
+    <hr class="ft-hr" />
+    <div class="ft-copy">
+      <span>© 2026 Lonely Hub. All rights reserved. Not affiliated with Roblox Corporation.</span>
+      <div class="ft-links">
+        <button>Privacy Policy</button>
+        <button>Terms of Service</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<nav class="bottom-bar">
+  <a class="bb-item active" href="/" data-bb="home">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </a>
+  <a class="bb-item" href="/getkey" data-bb="getkey">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.5-7.5"/><path d="M18 8.5 20.5 6"/><path d="M19 11l2.5-2.5"/></svg>
+    <span>Get Key</span>
+  </a>
+  <a class="bb-item" href="/mykeys" data-bb="mykeys">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+    <span>My Keys</span>
+  </a>
+  <a class="bb-item" href="#scripts" onclick="nav('#scripts');return false;" data-bb="scripts">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    <span>Scripts</span>
+  </a>
+  <a class="bb-item" href="https://dsc.gg/lonelyhub" target="_blank" data-bb="discord">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg>
+    <span>Discord</span>
+  </a>
+</nav>
+
+<div id="music-player" class="music-player glass-strong">
+  <div id="drag-handle" class="drag-handle" title="Drag to move">
+    <svg class="drag-icon" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="4" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="9" cy="4" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="9" cy="12" r="1.5"/></svg>
+    <svg class="drag-note" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <span class="drag-label">Lonely Hub Music</span>
+    <button class="mp-minimize-btn" id="mp-minimize" onclick="toggleMinimize()" title="Minimize">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div id="mp-body" class="mp-body">
+    <audio id="audio"></audio>
+    <div class="mp-row">
+      <div class="mp-art" id="mp-art">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </div>
+      <div class="mp-info">
+        <div class="mp-title" id="mp-title">Add music to /Musics</div>
+        <div class="mp-artist" id="mp-artist">Lonely Hub</div>
+      </div>
+      <button class="mp-icon-btn" onclick="toggleMute()" id="mute-btn" title="Mute">
+        <svg id="icon-vol" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+      </button>
+    </div>
+    <div class="mp-prog-row">
+      <span class="mp-time" id="t-cur">0:00</span>
+      <div class="mp-prog-wrap">
+        <div class="mp-prog-bg"></div>
+        <div class="mp-prog-fill" id="prog-fill" style="width:0%"></div>
+        <input class="mp-prog-input" type="range" id="prog-input" min="0" max="100" value="0" step="0.1" oninput="onSeek(this)" />
+      </div>
+      <span class="mp-time" id="t-tot">0:00</span>
+    </div>
+    <div class="mp-ctrl-row">
+      <div class="mp-ctrl-btns">
+        <button class="mp-icon-btn" onclick="prevTrack()" title="Previous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M7.5 12L19 5v14L7.5 12z"/></svg>
+        </button>
+        <button class="mp-play-btn" id="play-btn" onclick="togglePlay()" title="Play/Pause">
+          <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="mp-icon-btn" onclick="nextTrack()" title="Next">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16.5 12L5 5v14l11.5-7z"/></svg>
+        </button>
+      </div>
+      <div class="mp-vol-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="opacity:.5;flex-shrink:0"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+        <div class="mp-vol-wrap">
+          <div class="mp-vol-bg"></div>
+          <div class="mp-vol-fill" id="vol-fill" style="width:70%"></div>
+          <input class="mp-prog-input" type="range" id="vol-input" min="0" max="1" step="0.01" value="0.7" oninput="onVolume(this)" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/main.js?v=6"></script>
+<script src="/static/music.js?v=6"></script>
+<script src="/static/extras.js?v=6"></script>
+</body>
+</html>
