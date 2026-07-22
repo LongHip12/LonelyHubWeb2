@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Panel - Lonely Hub</title>
+<link rel="stylesheet" href="/static/style.css?v=4" />
+</head>
+<body>
+<canvas id="snow"></canvas>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+
+<header class="topbar">
+  <div class="brand">
+    <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub" class="logo" onerror="this.outerHTML='<span class=&quot;logo logo-text&quot;>LH</span>'"/>
+    <span class="brand-name">Lonely Hub Admin</span>
+  </div>
+  <nav class="nav">
+    <a href="/">Home</a>
+    <a href="/api/v3/auth/admin/manager.html">Logout</a>
+  </nav>
+</header>
+
+<main class="panel-wrap">
+  <div class="panel-head">
+    <h1>Key Manager</h1>
+    <span class="hint">Session: 5 minutes</span>
+  </div>
+
+  <div class="panel-grid">
+    <div class="glass stat"><div class="num" id="statKeys">0</div><div class="lbl">Total Keys</div></div>
+    <div class="glass stat"><div class="num" id="statActive">0</div><div class="lbl">Active Keys</div></div>
+    <div class="glass stat"><div class="num" id="statBlocked">0</div><div class="lbl">Blocked Targets</div></div>
+  </div>
+
+  <section class="glass panel-section">
+    <h2>Add Key</h2>
+    <div class="row">
+      <input class="input" id="addKey" placeholder="Custom key (optional)"/>
+      <input class="input" id="addHwid" placeholder="HWID (optional)"/>
+      <input class="input" id="addHours" placeholder="Hours" value="24" type="number"/>
+      <button class="btn btn-grad" id="addKeyBtn">Add Key</button>
+    </div>
+  </section>
+
+  <section class="glass panel-section">
+    <h2>All Keys</h2>
+    <div style="overflow-x:auto">
+      <table class="table">
+        <thead><tr>
+          <th>Key</th><th>Duration</th><th>HWID</th><th>Created</th><th>Expires</th><th>Time Left</th><th>Actions</th>
+        </tr></thead>
+        <tbody id="keysBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="glass panel-section">
+    <h2>Blocked Targets</h2>
+    <div style="overflow-x:auto">
+      <table class="table">
+        <thead><tr>
+          <th>Target (IP/HWID)</th><th>Reason</th><th>Until</th><th>Time Left</th><th>Action</th>
+        </tr></thead>
+        <tbody id="blockedBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© Lonely Hub 2026</span>
+    <div class="socials"></div>
+  </div>
+</footer>
+
+<script src="/static/script.js?v=4"></script>
+<script src="/static/admin.js?v=4"></script>
+</body>
+</html>
