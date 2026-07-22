@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Login - Lonely Hub</title>
+<link rel="stylesheet" href="/static/style.css?v=4" />
+</head>
+<body>
+<canvas id="snow"></canvas>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+
+<main class="admin-wrap">
+  <section class="glass admin-card">
+    <h1>Admin Login</h1>
+    <p class="hint" style="text-align:center;margin-bottom:18px">Provide all required header keys to authenticate. Session lasts 5 minutes.</p>
+
+    <label class="label">X-Admin-Key</label>
+    <input type="password" class="input" id="k1" placeholder="Admin key"/>
+    <label class="label">X-Admin-Secret</label>
+    <input type="password" class="input" id="k2" placeholder="Admin secret"/>
+    <label class="label">X-Dev-Token</label>
+    <input type="password" class="input" id="k3" placeholder="Dev token"/>
+    <label class="label">X-Manager-Pass</label>
+    <input type="password" class="input" id="k4" placeholder="Manager pass"/>
+    <label class="label">Authorization</label>
+    <input type="password" class="input" id="k5" placeholder="Bearer token"/>
+
+    <button class="btn-primary" id="loginBtn">Login</button>
+    <div class="status" id="loginStatus" style="text-align:center;margin-top:14px"></div>
+  </section>
+</main>
+
+<script>
+document.getElementById('loginBtn').addEventListener('click', async ()=>{
+  const headers = {
+    'Content-Type':'application/json',
+    'X-Admin-Key': document.getElementById('k1').value,
+    'X-Admin-Secret': document.getElementById('k2').value,
+    'X-Dev-Token': document.getElementById('k3').value,
+    'X-Manager-Pass': document.getElementById('k4').value,
+    'Authorization': document.getElementById('k5').value,
+  };
+  const s = document.getElementById('loginStatus');
+  s.textContent = 'Authenticating...';
+  s.style.color = '#aab0d6';
+  try {
+    const r = await fetch('/api/v3/auth/admin/manager.html',{method:'POST',headers});
+    const data = await r.json();
+    if (data.status === 'ok'){
+      s.style.color = '#34d399';
+      s.textContent = 'Success! Redirecting...';
+      setTimeout(()=>{window.location.href='/api/v3/auth/admin/key.html'},700);
+    } else {
+      s.style.color = '#ff8fbf';
+      s.textContent = 'Invalid headers';
+    }
+  } catch(e){
+    s.style.color = '#ff8fbf';
+    s.textContent = 'Login failed';
+  }
+});
+</script>
+</body>
+</html>
