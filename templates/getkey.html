@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Get Key — Lonely Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/style.css?v=9" />
+<link rel="stylesheet" href="/static/extras.css?v=9" />
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+<style>
+  html { scroll-behavior: smooth; }
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  #snow { position:fixed; top:0; left:0; z-index:0; pointer-events:none !important; }
+  .verify-overlay { display:none !important; }
+
+  .cta-card { padding:24px 22px 26px; }
+  .cta-card .card-head { margin-bottom:8px; }
+  .section-block { margin-top:18px; }
+  .section-label {
+    display:flex; align-items:center; gap:10px;
+    color:#fff; font-weight:700; font-size:13px; letter-spacing:.05em;
+    text-transform:uppercase; opacity:.85; margin-bottom:10px;
+  }
+  .section-label .num {
+    width:22px; height:22px; border-radius:50%;
+    background:linear-gradient(135deg,#ef4444,#7c3aed);
+    color:#fff; font-size:12px; font-weight:800;
+    display:inline-flex; align-items:center; justify-content:center;
+  }
+  .section-label .ok {
+    margin-left:auto; color:#10b981; font-size:12px; opacity:0;
+    transition:opacity .25s;
+  }
+  .section-label .ok.show { opacity:1; }
+
+  .dur-row {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  }
+  .dur-mini-btn {
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.12);
+    color:#fff; padding:12px 6px; border-radius:12px;
+    cursor:pointer; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    transition:all .2s;
+  }
+  .dur-mini-btn span { font-weight:800; font-size:18px; line-height:1; }
+  .dur-mini-btn small { font-size:10.5px; opacity:.75; margin-top:4px; }
+  .dur-mini-btn:hover { border-color:rgba(255,255,255,0.3); transform:translateY(-1px); }
+  .dur-mini-btn.active {
+    background:linear-gradient(135deg,#ef4444,#7c3aed);
+    border-color:transparent;
+    box-shadow:0 6px 16px rgba(239,68,68,.25);
+  }
+
+  .captcha-host {
+    display:flex; justify-content:center; align-items:center;
+    min-height:78px; padding:8px 0;
+  }
+  .cap-stage .cap-host-hc { display:none; }
+  .cap-stage[data-stage="hc"] .cap-host-cf { display:none; }
+  .cap-stage[data-stage="hc"] .cap-host-hc { display:flex; }
+  .cap-stage[data-stage="done"] .cap-host-cf,
+  .cap-stage[data-stage="done"] .cap-host-hc { display:none; }
+  .cap-stage[data-stage="done"] .cap-progress { opacity:.85; }
+  .cap-progress {
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:14px;
+  }
+  .cap-step {
+    display:flex; align-items:center; gap:8px;
+    color:#fff; font-size:12.5px; font-weight:600;
+    opacity:.5; transition:opacity .25s;
+  }
+  .cap-step.active { opacity:1; }
+  .cap-step.done { opacity:1; color:#10b981; }
+  .cap-dot {
+    width:10px; height:10px; border-radius:50%;
+    background:rgba(255,255,255,.2);
+    border:2px solid rgba(255,255,255,.35);
+    transition:all .25s;
+  }
+  .cap-step.active .cap-dot {
+    background:#ef4444;
+    border-color:#ef4444;
+    box-shadow:0 0 0 4px rgba(239,68,68,.18);
+  }
+  .cap-step.done .cap-dot {
+    background:#10b981;
+    border-color:#10b981;
+    box-shadow:0 0 0 4px rgba(16,185,129,.18);
+  }
+  .cap-bar {
+    flex:1; height:3px; border-radius:3px;
+    background:rgba(255,255,255,.08); overflow:hidden;
+  }
+  .cap-bar-fill {
+    height:100%; width:0%;
+    background:linear-gradient(90deg,#ef4444,#7c3aed);
+    transition:width .35s ease;
+  }
+  .cap-stage[data-stage="hc"] .cap-bar-fill { width:50%; }
+  .cap-stage[data-stage="done"] .cap-bar-fill { width:100%; }
+
+  #getKeyBtn { margin-top:18px; width:100%; }
+  #getKeyBtn[disabled] { opacity:.55; cursor:not-allowed; }
+
+  .socials a {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:36px; height:36px; border-radius:10px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    transition:all .2s;
+  }
+  .socials a:hover {
+    background:rgba(88,101,242,0.18);
+    border-color:rgba(88,101,242,0.55);
+    color:#fff;
+    transform:translateY(-1px);
+  }
+  .bottom-bar .bb-item svg {
+    margin:0 auto;
+  }
+
+  #status {
+    text-align:center; margin-top:12px; min-height:18px;
+    font-size:13px; color:#fff; opacity:.85;
+  }
+
+  @media (max-width:480px){
+    .dur-row { grid-template-columns:repeat(2,1fr); }
+  }
+  @media (prefers-reduced-motion:reduce) {
+    *,*::before,*::after { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+<canvas id="snow"></canvas>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<header class="topbar topbar-v2">
+  <a href="/" class="brand">
+    <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub" class="logo" onerror="this.outerHTML='<span class=&quot;logo logo-text&quot;>LH</span>'"/>
+    <span class="brand-name">Lonely Hub</span>
+  </a>
+  <button class="hamburger-2" onclick="document.getElementById('side-menu-2').classList.add('open');document.getElementById('menu-backdrop-2').classList.add('open')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</header>
+
+<div id="menu-backdrop-2" class="menu-backdrop" onclick="this.classList.remove('open');document.getElementById('side-menu-2').classList.remove('open')"></div>
+<aside id="side-menu-2" class="side-menu side-menu-red">
+  <div class="sm-header">
+    <span class="sm-title">Navigation</span>
+    <button class="sm-close" onclick="document.getElementById('menu-backdrop-2').classList.remove('open');document.getElementById('side-menu-2').classList.remove('open')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="sm-nav">
+    <a href="/">Home</a>
+    <a href="/getkey">Get Key</a>
+    <a href="/mykeys">My Keys</a>
+    <a href="/#scripts">Scripts</a>
+    <a href="/#showcase">Videos</a>
+    <a href="/#features">Features</a>
+    <a href="/#faqs">FAQs</a>
+  </nav>
+</aside>
+
+<main class="container container-narrow">
+  <section class="hero glass anim-pop">
+    <div class="status-pill">
+      <span class="dot"></span>
+      <span id="rotor" class="rotor-text">Live &amp; Secured</span>
+    </div>
+    <h1 class="title hero-title">Get Your <span class="grad-text">Lonely Hub</span> Key</h1>
+    <p class="subtitle hero-sub">Pick a method, choose a duration, solve the captchas — done.</p>
+  </section>
+
+  <section class="grid single">
+    <div class="glass card cta-card anim-pop delay-1">
+      <div class="card-head"><h2>Generate Your Key</h2></div>
+
+      <div class="section-block">
+        <div class="section-label"><span class="num">1</span>Choose Method</div>
+        <div class="method-row">
+          <button class="method-btn active" data-method="linkvertise">
+            <div class="method-name">Linkvertise</div>
+            <div class="method-sub">Standard ad-link</div>
+          </button>
+          <button class="method-btn" data-method="link4m">
+            <div class="method-name">Link4m</div>
+            <div class="method-sub">Vietnam shortener</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label"><span class="num">2</span>Choose Duration</div>
+        <div id="durRow" class="dur-row"></div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">
+          <span class="num">3</span>Verify you are not a robot
+          <span id="bothOk" class="ok">✓ Verified</span>
+        </div>
+        <div id="capStage" class="cap-stage" data-stage="cf">
+          <div class="cap-progress">
+            <div class="cap-step active" data-step="cf"><span class="cap-dot"></span>Cloudflare</div>
+            <div class="cap-bar"><div class="cap-bar-fill"></div></div>
+            <div class="cap-step" data-step="hc"><span class="cap-dot"></span>hCaptcha</div>
+          </div>
+          <div class="captcha-host cap-host-cf">
+            <div id="cf-host" class="cf-turnstile" data-sitekey="{{ cf_sitekey }}" data-callback="onCfVerify" data-theme="dark"></div>
+          </div>
+          <div class="captcha-host cap-host-hc">
+            <div id="hc-host" class="h-captcha" data-sitekey="{{ hcaptcha_sitekey }}" data-callback="onHcVerify" data-theme="dark"></div>
+          </div>
+        </div>
+      </div>
+
+      <button id="getKeyBtn" class="cta-btn" disabled>Solve both captchas to continue</button>
+      <div id="status"></div>
+    </div>
+  </section>
+
+  <section class="grid two-cards">
+    <div class="glass card howto anim-pop delay-2">
+      <div class="card-head">
+        <div class="howto-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.5-7.5"/><path d="M18 8.5 20.5 6"/><path d="M19 11l2.5-2.5"/></svg>
+        </div>
+        <h2>How To Get Key</h2>
+      </div>
+      <ol class="step-list">
+        <li><span class="sn">1</span><div><b>Pick a method</b><p>Linkvertise or Link4m.</p></div></li>
+        <li><span class="sn">2</span><div><b>Pick a duration</b><p>Longer = more short links.</p></div></li>
+        <li><span class="sn">3</span><div><b>Pass both captchas</b><p>Cloudflare &amp; hCaptcha.</p></div></li>
+        <li><span class="sn">4</span><div><b>Bypass each link</b><p>Solve captchas at every step.</p></div></li>
+        <li><span class="sn">5</span><div><b>Receive your key</b><p>Copy &amp; save in My Keys.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="glass card howto anim-pop delay-3">
+      <div class="card-head">
+        <div class="howto-icon howto-icon-alt">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h2>How To Use Key</h2>
+      </div>
+      <ol class="step-list">
+        <li><span class="sn">1</span><div><b>Copy your key</b><p>From My Keys or generate new.</p></div></li>
+        <li><span class="sn">2</span><div><b>Run script</b><p>Execute LonelyHub loader in your executor.</p></div></li>
+        <li><span class="sn">3</span><div><b>Paste your key</b><p>Drop it into the key prompt.</p></div></li>
+        <li><span class="sn">4</span><div><b>Enjoy script</b><p>Full features unlocked.</p></div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© Lonely Hub 2026</span>
+    <div class="socials">
+      <a href="https://dsc.gg/lonelyhub" target="_blank" aria-label="Discord" class="discord-link">
+        <svg viewBox="0 2 24 22" width="22" height="22" fill="currentColor" style="display:block"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<nav class="bottom-bar bottom-bar-red">
+  <a class="bb-item" href="/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a>
+  <a class="bb-item active" href="/getkey"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.5-7.5"/><path d="M18 8.5 20.5 6"/><path d="M19 11l2.5-2.5"/></svg><span>Get Key</span></a>
+    <a class="bb-item" href="/library"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Library</span></a>
+  <a class="bb-item" href="/mykeys"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg><span>My Keys</span></a>
+  <a class="bb-item" href="/#scripts"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Scripts</span></a>
+  <a class="bb-item" href="https://dsc.gg/lonelyhub" target="_blank"><svg width="24" height="24" viewBox="0 2 24 22" fill="currentColor" style="display:block"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg><span>Discord</span></a>
+</nav>
+
+<script src="/static/script.js?v=9"></script>
+<script>
+const DURATIONS = {
+  linkvertise: [{v:"6hours",n:6,s:1},{v:"12hours",n:12,s:2},{v:"24hours",n:24,s:3},{v:"48hours",n:48,s:4}],
+  link4m:      [{v:"12hours",n:12,s:1},{v:"24hours",n:24,s:2},{v:"48hours",n:48,s:3},{v:"72hours",n:72,s:4}]
+};
+let methodChoice = "linkvertise";
+let durationChoice = "24hours";
+let cfToken = null, hcToken = null;
+
+const durRow = document.getElementById('durRow');
+const getKeyBtn = document.getElementById('getKeyBtn');
+const statusEl = document.getElementById('status');
+const bothOk = document.getElementById('bothOk');
+const capStage = document.getElementById('capStage');
+const capStepCf = document.querySelector('.cap-step[data-step="cf"]');
+const capStepHc = document.querySelector('.cap-step[data-step="hc"]');
+
+function setStage(s){
+  capStage.dataset.stage = s;
+  if (s === 'cf') {
+    capStepCf.classList.add('active'); capStepCf.classList.remove('done');
+    capStepHc.classList.remove('active','done');
+  } else if (s === 'hc') {
+    capStepCf.classList.remove('active'); capStepCf.classList.add('done');
+    capStepHc.classList.add('active'); capStepHc.classList.remove('done');
+  } else if (s === 'done') {
+    capStepCf.classList.remove('active'); capStepCf.classList.add('done');
+    capStepHc.classList.remove('active'); capStepHc.classList.add('done');
+  }
+}
+
+function refreshBtn(){
+  if (cfToken && hcToken) {
+    getKeyBtn.disabled = false;
+    getKeyBtn.textContent = 'Get Your Key';
+  } else if (cfToken) {
+    getKeyBtn.disabled = true;
+    getKeyBtn.textContent = 'Solve hCaptcha to continue';
+  } else {
+    getKeyBtn.disabled = true;
+    getKeyBtn.textContent = 'Verify you are not a robot';
+  }
+}
+
+function renderDurations(){
+  durRow.innerHTML = '';
+  const opts = DURATIONS[methodChoice];
+  if (!opts.find(o => o.v === durationChoice)) durationChoice = opts[0].v;
+  opts.forEach(o => {
+    const b = document.createElement('button');
+    b.className = 'dur-mini-btn' + (o.v === durationChoice ? ' active' : '');
+    b.dataset.dur = o.v;
+    b.innerHTML = `<span>${o.n}h</span><small>${o.s} link${o.s>1?'s':''}</small>`;
+    b.addEventListener('click', () => {
+      durationChoice = o.v;
+      durRow.querySelectorAll('.dur-mini-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+    });
+    durRow.appendChild(b);
+  });
+}
+
+document.querySelectorAll('.method-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.method-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    methodChoice = b.dataset.method;
+    renderDurations();
+  });
+});
+
+renderDurations();
+
+window.onCfVerify = function(token){
+  cfToken = token;
+  setStage('hc');
+  refreshBtn();
+  try { window.hcaptcha && window.hcaptcha.reset && window.hcaptcha.reset(); } catch(e){}
+};
+window.onHcVerify = function(token){
+  hcToken = token;
+  setStage('done');
+  bothOk.classList.add('show');
+  refreshBtn();
+};
+
+getKeyBtn.addEventListener('click', async () => {
+  if (!cfToken || !hcToken) { statusEl.textContent = 'Please solve both captchas.'; return; }
+  getKeyBtn.disabled = true;
+  getKeyBtn.textContent = 'Creating short link...';
+  statusEl.textContent = '';
+  try {
+    const hwid = (window.LonelyHub && LonelyHub.getHwid) ? LonelyHub.getHwid() : '';
+    const r = await fetch('/api/v1/auth/getkey/start', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-HWID': hwid},
+      body: JSON.stringify({hwid, method: methodChoice, duration: durationChoice, cf_token: cfToken, hcaptcha_token: hcToken})
+    });
+    const data = await r.json();
+    if (data.status === 'ok' && data.shortUrl) {
+      try { sessionStorage.setItem('lonely_session', JSON.stringify({sid: data.sessionId, total: data.totalSteps, nextStep: 1, method: methodChoice, duration: durationChoice})); } catch(e){}
+      statusEl.textContent = 'Redirecting to your short link...';
+      window.location.href = data.shortUrl;
+      return;
+    }
+    if (data.status === 'blocked' || data.status === 'verify_failed') {
+      window.location.href = '/blocked';
+      return;
+    }
+    statusEl.textContent = 'Error: ' + (data.message || data.status || 'unknown');
+    cfToken = null; hcToken = null;
+    bothOk.classList.remove('show');
+    setStage('cf');
+    try { window.turnstile && window.turnstile.reset(); } catch(e){}
+    try { window.hcaptcha && window.hcaptcha.reset(); } catch(e){}
+    refreshBtn();
+  } catch (e) {
+    statusEl.textContent = 'Network error: ' + e.message;
+    refreshBtn();
+  }
+});
+</script>
+<script src="/static/music.js?v=9"></script>
+<script src="/static/extras.js?v=9"></script>
+</body>
+</html>
