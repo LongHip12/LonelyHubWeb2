@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Get Key — Lonely Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/style.css?v=6" />
+<link rel="stylesheet" href="/static/extras.css?v=6" />
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<canvas id="snow"></canvas>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<header class="topbar topbar-v2">
+  <a href="/" class="brand">
+    <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub" class="logo" onerror="this.outerHTML='<span class=&quot;logo logo-text&quot;>LH</span>'"/>
+    <span class="brand-name">Lonely Hub</span>
+  </a>
+  <button class="hamburger-2" onclick="document.getElementById('side-menu-2').classList.add('open');document.getElementById('menu-backdrop-2').classList.add('open')">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</header>
+
+<div id="menu-backdrop-2" class="menu-backdrop" onclick="this.classList.remove('open');document.getElementById('side-menu-2').classList.remove('open')"></div>
+<aside id="side-menu-2" class="side-menu side-menu-red">
+  <div class="sm-header">
+    <span class="sm-title">Navigation</span>
+    <button class="sm-close" onclick="document.getElementById('menu-backdrop-2').classList.remove('open');document.getElementById('side-menu-2').classList.remove('open')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <nav class="sm-nav">
+    <a href="/">Home</a>
+    <a href="/getkey">Get Key</a>
+    <a href="/mykeys">My Keys</a>
+    <a href="/#scripts">Scripts</a>
+    <a href="/#showcase">Videos</a>
+    <a href="/#features">Features</a>
+    <a href="/#faqs">FAQs</a>
+  </nav>
+</aside>
+
+<main class="container container-narrow">
+
+  <section class="hero glass anim-pop">
+    <div class="status-pill">
+      <span class="dot"></span>
+      <span id="rotor" class="rotor-text">Live &amp; Secured</span>
+    </div>
+    <h1 class="title hero-title">Get Your <span class="grad-text">Lonely Hub</span> Key</h1>
+    <p class="subtitle hero-sub">Pick a verification method to begin.</p>
+  </section>
+
+  <section class="grid single">
+    <div class="glass card cta-card anim-pop delay-1">
+      <div class="card-head">
+        <h2>Choose Method</h2>
+      </div>
+      <div class="method-row">
+        <button class="method-btn active" data-method="linkvertise">
+          <div class="method-name">Linkvertise</div>
+          <div class="method-sub">Standard ad-link</div>
+        </button>
+        <button class="method-btn" data-method="link4m">
+          <div class="method-name">Link4m</div>
+          <div class="method-sub">Vietnam shortener</div>
+        </button>
+      </div>
+      <p class="hint">By continuing you agree not to bypass the verification system. Bypass attempts result in a 2-hour block.</p>
+      <button id="getKeyBtn" class="cta-btn">Get Your Key</button>
+    </div>
+  </section>
+
+  <section class="grid two-cards">
+    <div class="glass card howto anim-pop delay-2">
+      <div class="card-head">
+        <div class="howto-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.5-7.5"/><path d="M18 8.5 20.5 6"/><path d="M19 11l2.5-2.5"/></svg>
+        </div>
+        <h2>How To Get Key</h2>
+      </div>
+      <ol class="step-list">
+        <li><span class="sn">1</span><div><b>Pick a method</b><p>Linkvertise or Link4m.</p></div></li>
+        <li><span class="sn">2</span><div><b>Hit Get Your Key</b><p>The verify panel opens.</p></div></li>
+        <li><span class="sn">3</span><div><b>Pass the captchas</b><p>Cloudflare → hCaptcha.</p></div></li>
+        <li><span class="sn">4</span><div><b>Choose duration</b><p>6h · 12h · 24h · 48h.</p></div></li>
+        <li><span class="sn">5</span><div><b>Receive your key</b><p>Copy & save in My Keys.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="glass card howto anim-pop delay-3">
+      <div class="card-head">
+        <div class="howto-icon howto-icon-alt">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h2>How To Use Key</h2>
+      </div>
+      <ol class="step-list">
+        <li><span class="sn">1</span><div><b>Copy your key</b><p>From My Keys or generate new.</p></div></li>
+        <li><span class="sn">2</span><div><b>Run script</b><p>Execute LonelyHub loader in your executor.</p></div></li>
+        <li><span class="sn">3</span><div><b>Paste your key</b><p>Drop it into the key prompt.</p></div></li>
+        <li><span class="sn">4</span><div><b>Enjoy script</b><p>Full features unlocked.</p></div></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<div id="verify-overlay" class="verify-overlay">
+  <div id="modal" class="verify-modal state-intro">
+    <div class="modal-glow"></div>
+
+    <button class="modal-close" onclick="closeVerify()" title="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
+    <div class="modal-pane pane-intro">
+      <div class="intro-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5l-8-3z"/>
+          <path d="m9 12 2 2 4-4"/>
+        </svg>
+      </div>
+      <h2 class="modal-title">Verify you are not a robot</h2>
+      <p class="modal-sub">Continue to solve a captcha to unlock your key.</p>
+      <button id="beginBtn" class="modal-btn">Begin Verify</button>
+    </div>
+
+    <div class="modal-pane pane-cf">
+      <div class="modal-step-label">Solve captcha to continue</div>
+      <div class="captcha-host">
+        <div class="cf-turnstile" data-sitekey="{{ cf_sitekey }}" data-callback="onCfVerify"></div>
+      </div>
+      <div class="modal-foot">Solving…</div>
+    </div>
+
+    <div class="modal-pane pane-hc">
+      <div class="modal-step-label">Solve captcha to continue</div>
+      <div class="captcha-host">
+        <div class="h-captcha" data-sitekey="{{ hcaptcha_sitekey }}" data-callback="onHcVerify"></div>
+      </div>
+      <div class="modal-foot">Solving…</div>
+    </div>
+
+    <div class="modal-pane pane-dur">
+      <h2 class="modal-title">Pick your duration</h2>
+      <p class="modal-sub">How long should the key stay valid?</p>
+      <div class="dur-mini">
+        <button class="dur-mini-btn" data-dur="6hours"><span>6</span><small>hours</small></button>
+        <button class="dur-mini-btn" data-dur="12hours"><span>12</span><small>hours</small></button>
+        <button class="dur-mini-btn active" data-dur="24hours"><span>24</span><small>hours</small></button>
+        <button class="dur-mini-btn" data-dur="48hours"><span>48</span><small>hours</small></button>
+      </div>
+      <button id="genBtn" class="modal-btn">Generate Key</button>
+    </div>
+
+    <div class="modal-pane pane-key">
+      <div class="success-mark">
+        <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+      </div>
+      <h2 class="modal-title">Your Key is Ready</h2>
+      <div id="keyBox" class="key-box modal-key">…</div>
+      <div class="key-actions">
+        <button id="copyBtn" class="modal-btn">Copy Key</button>
+        <a href="/mykeys" class="modal-btn modal-btn-ghost">Open My Keys</a>
+      </div>
+    </div>
+
+    <div id="status" class="modal-status"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© Lonely Hub 2026</span>
+    <div class="socials">
+      <a href="https://dsc.gg/lonelyhub" target="_blank" aria-label="Discord">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<nav class="bottom-bar bottom-bar-red">
+  <a class="bb-item" href="/" data-bb="home">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>Home</span>
+  </a>
+  <a class="bb-item active" href="/getkey">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.5-7.5"/><path d="M18 8.5 20.5 6"/><path d="M19 11l2.5-2.5"/></svg>
+    <span>Get Key</span>
+  </a>
+  <a class="bb-item" href="/mykeys">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+    <span>My Keys</span>
+  </a>
+  <a class="bb-item" href="/#scripts">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+    <span>Scripts</span>
+  </a>
+  <a class="bb-item" href="https://dsc.gg/lonelyhub" target="_blank">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg>
+    <span>Discord</span>
+  </a>
+</nav>
+
+<div id="music-player" class="music-player glass-strong">
+  <div id="drag-handle" class="drag-handle" title="Drag to move">
+    <svg class="drag-icon" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="4" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="9" cy="4" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="9" cy="12" r="1.5"/></svg>
+    <svg class="drag-note" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <span class="drag-label">Lonely Hub Music</span>
+    <button class="mp-minimize-btn" id="mp-minimize" onclick="toggleMinimize()" title="Minimize">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div id="mp-body" class="mp-body">
+    <audio id="audio"></audio>
+    <div class="mp-row">
+      <div class="mp-art" id="mp-art">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </div>
+      <div class="mp-info">
+        <div class="mp-title" id="mp-title">Add music to /Musics</div>
+        <div class="mp-artist" id="mp-artist">Lonely Hub</div>
+      </div>
+      <button class="mp-icon-btn" onclick="toggleMute()" id="mute-btn" title="Mute">
+        <svg id="icon-vol" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+      </button>
+    </div>
+    <div class="mp-prog-row">
+      <span class="mp-time" id="t-cur">0:00</span>
+      <div class="mp-prog-wrap">
+        <div class="mp-prog-bg"></div>
+        <div class="mp-prog-fill" id="prog-fill" style="width:0%"></div>
+        <input class="mp-prog-input" type="range" id="prog-input" min="0" max="100" value="0" step="0.1" oninput="onSeek(this)" />
+      </div>
+      <span class="mp-time" id="t-tot">0:00</span>
+    </div>
+    <div class="mp-ctrl-row">
+      <div class="mp-ctrl-btns">
+        <button class="mp-icon-btn" onclick="prevTrack()" title="Previous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M7.5 12L19 5v14L7.5 12z"/></svg>
+        </button>
+        <button class="mp-play-btn" id="play-btn" onclick="togglePlay()" title="Play/Pause">
+          <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="mp-icon-btn" onclick="nextTrack()" title="Next">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16.5 12L5 5v14l11.5-7z"/></svg>
+        </button>
+      </div>
+      <div class="mp-vol-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="opacity:.5;flex-shrink:0"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+        <div class="mp-vol-wrap">
+          <div class="mp-vol-bg"></div>
+          <div class="mp-vol-fill" id="vol-fill" style="width:70%"></div>
+          <input class="mp-prog-input" type="range" id="vol-input" min="0" max="1" step="0.01" value="0.7" oninput="onVolume(this)" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/static/script.js?v=6"></script>
+<script src="/static/music.js?v=6"></script>
+<script src="/static/extras.js?v=6"></script>
+<script>
+const METHOD = "{{ method }}";
+const URL_PARAMS = new URLSearchParams(window.location.search);
+const PRESELECT_DUR = URL_PARAMS.get("duration");
+const VALID_DURATIONS = ["6hours","12hours","24hours","48hours"];
+let session = null;
+let chosenDuration = "24hours";
+let methodChoice = "linkvertise";
+
+function resetCaptchas(){
+  try { if (window.turnstile && typeof window.turnstile.reset === 'function') window.turnstile.reset(); } catch(e){}
+  try { if (window.hcaptcha && typeof window.hcaptcha.reset === 'function') window.hcaptcha.reset(); } catch(e){}
+}
+
+(function() {
+  var currentMethod = methodChoice;
+  document.querySelectorAll('.method-btn').forEach(function(b) {
+    b.addEventListener('click', function() {
+      var newMethod = b.dataset.method;
+      document.querySelectorAll('.method-btn').forEach(function(x) {
+        x.classList.remove('active');
+      });
+      b.classList.add('active');
+      methodChoice = newMethod;
+      if (newMethod === currentMethod) return;
+      currentMethod = newMethod;
+
+      var ov = document.getElementById('verify-overlay');
+      if (ov && ov.classList.contains('open')) {
+        ov.classList.remove('open');
+      }
+      session = null;
+      resetCaptchas();
+      var statusEl = document.getElementById('status');
+      if (statusEl) statusEl.textContent = '';
+      var modalEl = document.getElementById('modal');
+      if (modalEl) setState('intro');
+    });
+  });
+})();
+
+const overlay = document.getElementById('verify-overlay');
+const modal = document.getElementById('modal');
+const statusEl = document.getElementById('status');
+
+function setState(state){
+  modal.classList.remove('state-intro','state-cf','state-hc','state-dur','state-key');
+  modal.classList.add('state-' + state);
+}
+function setStatus(msg, color){
+  statusEl.textContent = msg || '';
+  statusEl.style.color = color || '#e5c5c5';
+}
+function flashSuccess(){
+  modal.classList.add('flash-ok');
+  setTimeout(()=>modal.classList.remove('flash-ok'), 600);
+}
+function openVerify(){
+  overlay.classList.add('open');
+  setState('intro');
+  setStatus('');
+}
+function beginVerify(){
+  setState('cf');
+  setStatus('Solve the captcha to continue.');
+  startSession();
+}
+function closeVerify(){
+  overlay.classList.remove('open');
+  session = null;
+  resetCaptchas();
+  setState('intro');
+  setStatus('');
+}
+window.closeVerify = closeVerify;
+
+if (PRESELECT_DUR && VALID_DURATIONS.includes(PRESELECT_DUR)){
+  chosenDuration = PRESELECT_DUR;
+}
+
+async function startSession(){
+  if (session) return session;
+  const r = await LonelyHub.start(methodChoice, chosenDuration);
+  if (r.status !== 'ok'){
+    if (r.blockedUntil) { window.location.href='/blocked'; return null; }
+    setStatus('Failed to start session','#ff8fbf');
+    return null;
+  }
+  session = r;
+  return session;
+}
+
+document.getElementById('getKeyBtn').addEventListener('click', ()=>{
+  openVerify();
+});
+
+document.getElementById('beginBtn').addEventListener('click', ()=>{
+  beginVerify();
+});
+
+async function onCfVerify(token){
+  if (!session){ const ok = await startSession(); if (!ok) return; }
+  setStatus('Verifying Cloudflare...');
+  await new Promise(res=>setTimeout(res, 900));
+  const r = await LonelyHub.step(session.sessionId, 1, session.nextToken, {cf_token: token});
+  if (r.status === 'bypass_detected' || r.status === 'verify_failed'){ window.location.href='/blocked'; return; }
+  if (r.status !== 'ok'){ setStatus('Cloudflare verification failed','#ff8fbf'); return; }
+  session.nextToken = r.nextToken;
+  flashSuccess();
+  setTimeout(()=>{ setState('hc'); setStatus('Now solve the hCaptcha challenge.'); }, 350);
+}
+window.onCfVerify = onCfVerify;
+
+async function onHcVerify(token){
+  setStatus('Verifying hCaptcha...');
+  await new Promise(res=>setTimeout(res, 900));
+  const r = await LonelyHub.step(session.sessionId, 2, session.nextToken, {hcaptcha_token: token});
+  if (r.status === 'bypass_detected' || r.status === 'verify_failed'){ window.location.href='/blocked'; return; }
+  if (r.status !== 'ok'){ setStatus('hCaptcha verification failed','#ff8fbf'); return; }
+  session.nextToken = r.nextToken;
+  flashSuccess();
+  setTimeout(()=>{ setState('dur'); setStatus('Pick how long the key should last.'); }, 350);
+}
+window.onHcVerify = onHcVerify;
+
+document.querySelectorAll('.dur-mini-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.dur-mini-btn').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    chosenDuration = b.dataset.dur;
+  });
+});
+
+document.getElementById('genBtn').addEventListener('click', async ()=>{
+  setStatus('Generating your key...');
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  await new Promise(res=>setTimeout(res, 700));
+  const c = await LonelyHub.complete(session.sessionId, chosenDuration);
+  if (c.status === 'success'){
+    document.getElementById('keyBox').textContent = c.key;
+    saveKeyLocal({key: c.key, duration: c.duration || chosenDuration, expireAt: c.expireAt, createdAt: Date.now(), method: methodChoice});
+    flashSuccess();
+    setTimeout(()=>{ setState('key'); setStatus('Key valid for ' + (c.duration||chosenDuration) + '.', '#ffb0b0'); }, 350);
+  } else if (c.status === 'bypass_detected' || c.status === 'verify_failed'){
+    window.location.href = '/blocked';
+  } else {
+    setStatus('Failed to generate key','#ff8fbf');
+    btn.disabled = false;
+  }
+});
+
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  const k = document.getElementById('keyBox').textContent;
+  navigator.clipboard.writeText(k);
+  setStatus('Key copied to clipboard!','#ffb0b0');
+});
+
+function saveKeyLocal(rec){
+  try{
+    const list = JSON.parse(localStorage.getItem('lonely_keys')||'[]');
+    if (list.some(x=>x.key === rec.key)) return;
+    list.unshift(rec);
+    localStorage.setItem('lonely_keys', JSON.stringify(list.slice(0, 30)));
+  }catch(e){}
+}
+
+const ROTOR_PHRASES = ['Live & Secured', 'Trusted By Thousands Daily', 'Free Roblox Key System'];
+let rotorIdx = 0;
+const rotorEl = document.getElementById('rotor');
+async function typeText(target, text){
+  for (let i=0;i<=text.length;i++){
+    target.textContent = text.slice(0,i);
+    await new Promise(r=>setTimeout(r, 45));
+  }
+}
+async function eraseText(target){
+  const cur = target.textContent;
+  for (let i=cur.length;i>=0;i--){
+    target.textContent = cur.slice(0,i);
+    await new Promise(r=>setTimeout(r, 28));
+  }
+}
+async function rotorLoop(){
+  while (true){
+    const phrase = ROTOR_PHRASES[rotorIdx % ROTOR_PHRASES.length];
+    await typeText(rotorEl, phrase);
+    await new Promise(r=>setTimeout(r, 5000));
+    await eraseText(rotorEl);
+    rotorIdx++;
+  }
+}
+rotorEl.textContent = '';
+rotorLoop();
+</script>
+
+  </body>
+</html>
