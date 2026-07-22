@@ -1,0 +1,7 @@
+{
+  "X-Admin-Key": "LonelyHub-Admin-7f3b9c1a8e4d2f5a6b7c8d9e0f1a2b3c",
+  "X-Admin-Secret": "LonelyHub-Secret-9e8d7c6b5a4f3e2d1c0b9a8f7e6d5c4b",
+  "X-Dev-Token": "LonelyHub-Dev-1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d",
+  "X-Manager-Pass": "LonelyHub-Manager-c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9",
+  "Authorization": "Bearer LonelyHub-Master-0xDEADBEEFCAFEBABE1234567890ABCDEF"
+}
