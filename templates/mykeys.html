@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Keys — Lonely Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/style.css?v=6" />
+<link rel="stylesheet" href="/static/extras.css?v=6" />
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<canvas id="snow"></canvas>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<header class="topbar topbar-v2">
+  <a href="/" class="brand">
+    <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub" class="logo" onerror="this.outerHTML='<span class=&quot;logo logo-text&quot;>LH</span>'"/>
+    <span class="brand-name">Lonely Hub</span>
+  </a>
+  <a href="/getkey" class="topbar-cta">+ Get New Key</a>
+</header>
+
+<main class="container container-narrow">
+  <section class="hero glass anim-pop">
+    <div class="status-pill">
+      <span class="dot"></span>
+      <span>Saved On This Device</span>
+    </div>
+    <h1 class="title hero-title">My <span class="grad-text">Lonely Hub</span> Keys</h1>
+    <p class="subtitle hero-sub">Keys are saved in your browser and persist between visits.</p>
+  </section>
+
+  <section id="emptyState" class="glass card anim-pop delay-1" style="display:none">
+    <div class="empty-wrap">
+      <div class="empty-icon">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
+      <h2>No keys saved yet</h2>
+      <p>Generate your first key to see it here.</p>
+      <a href="/getkey" class="cta-btn">Get Your First Key</a>
+    </div>
+  </section>
+
+  <section id="keysList" class="keys-list"></section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© Lonely Hub 2026</span>
+    <div class="socials">
+      <a href="https://dsc.gg/lonelyhub" target="_blank" aria-label="Discord">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<nav class="bottom-bar bottom-bar-red">
+  <a class="bb-item" href="/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></a>
+  <a class="bb-item" href="/getkey"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m10.85 12.15 7.5-7.5"/><path d="M18 8.5 20.5 6"/><path d="M19 11l2.5-2.5"/></svg><span>Get Key</span></a>
+  <a class="bb-item active" href="/mykeys"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg><span>My Keys</span></a>
+  <a class="bb-item" href="/#scripts"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg><span>Scripts</span></a>
+  <a class="bb-item" href="https://dsc.gg/lonelyhub" target="_blank"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902ZM8.02 17.165c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.954 2.42-2.157 2.42Zm7.974 0c-1.183 0-2.157-1.085-2.157-2.42 0-1.336.954-2.422 2.157-2.422 1.21 0 2.177 1.094 2.157 2.422 0 1.335-.948 2.42-2.157 2.42Z"/></svg><span>Discord</span></a>
+</nav>
+
+<div id="music-player" class="music-player glass-strong">
+  <div id="drag-handle" class="drag-handle" title="Drag to move">
+    <svg class="drag-icon" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="4" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="9" cy="4" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="9" cy="12" r="1.5"/></svg>
+    <svg class="drag-note" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <span class="drag-label">Lonely Hub Music</span>
+    <button class="mp-minimize-btn" id="mp-minimize" onclick="toggleMinimize()" title="Minimize">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div id="mp-body" class="mp-body">
+    <audio id="audio"></audio>
+    <div class="mp-row">
+      <div class="mp-art" id="mp-art">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </div>
+      <div class="mp-info">
+        <div class="mp-title" id="mp-title">Add music to /Musics</div>
+        <div class="mp-artist" id="mp-artist">Lonely Hub</div>
+      </div>
+      <button class="mp-icon-btn" onclick="toggleMute()" id="mute-btn" title="Mute">
+        <svg id="icon-vol" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+      </button>
+    </div>
+    <div class="mp-prog-row">
+      <span class="mp-time" id="t-cur">0:00</span>
+      <div class="mp-prog-wrap">
+        <div class="mp-prog-bg"></div>
+        <div class="mp-prog-fill" id="prog-fill" style="width:0%"></div>
+        <input class="mp-prog-input" type="range" id="prog-input" min="0" max="100" value="0" step="0.1" oninput="onSeek(this)" />
+      </div>
+      <span class="mp-time" id="t-tot">0:00</span>
+    </div>
+    <div class="mp-ctrl-row">
+      <div class="mp-ctrl-btns">
+        <button class="mp-icon-btn" onclick="prevTrack()" title="Previous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M7.5 12L19 5v14L7.5 12z"/></svg>
+        </button>
+        <button class="mp-play-btn" id="play-btn" onclick="togglePlay()" title="Play/Pause">
+          <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="mp-icon-btn" onclick="nextTrack()" title="Next">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16.5 12L5 5v14l11.5-7z"/></svg>
+        </button>
+      </div>
+      <div class="mp-vol-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="opacity:.5;flex-shrink:0"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+        <div class="mp-vol-wrap">
+          <div class="mp-vol-bg"></div>
+          <div class="mp-vol-fill" id="vol-fill" style="width:70%"></div>
+          <input class="mp-prog-input" type="range" id="vol-input" min="0" max="1" step="0.01" value="0.7" oninput="onVolume(this)" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/static/script.js?v=6"></script>
+<script src="/static/music.js?v=6"></script>
+<script src="/static/extras.js?v=6"></script>
+<script>
+function loadKeys(){ try{ return JSON.parse(localStorage.getItem('lonely_keys')||'[]'); }catch(e){ return []; } }
+function saveKeys(list){ localStorage.setItem('lonely_keys', JSON.stringify(list)); }
+function fmtRemaining(ms){
+  if (ms<=0) return 'Expired';
+  const s = Math.floor(ms/1000);
+  const d = Math.floor(s/86400);
+  const h = Math.floor((s%86400)/3600);
+  const m = Math.floor((s%3600)/60);
+  const ss = s%60;
+  if (d>0) return d+'d '+h+'h '+m+'m '+ss+'s';
+  if (h>0) return h+'h '+m+'m '+ss+'s';
+  return m+'m '+ss+'s';
+}
+function fmtDate(ts){ try{ return new Date(ts).toLocaleString(); }catch(e){ return '—'; } }
+
+const listEl = document.getElementById('keysList');
+const emptyEl = document.getElementById('emptyState');
+
+function fmtCooldown(ms){
+  if (ms<=0) return '';
+  const s = Math.ceil(ms/1000);
+  const m = Math.floor(s/60);
+  const ss = s%60;
+  if (m>0) return m+'m '+ss+'s';
+  return s+'s';
+}
+
+const meta = {};
+
+function render(){
+  let keys = loadKeys();
+  if (keys.length === 0){ emptyEl.style.display='block'; listEl.innerHTML=''; return; }
+  emptyEl.style.display='none';
+  listEl.innerHTML = '';
+  keys.forEach((k, idx)=>{
+    const card = document.createElement('div');
+    card.className = 'glass card key-card anim-pop';
+    card.style.animationDelay = (0.05 + idx*0.04) + 's';
+    const remaining = (k.expireAt||0) - Date.now();
+    const expired = remaining <= 0;
+    const m = meta[k.key] || {};
+    const bound = m.hwidBound;
+    const hwidLine = bound
+      ? `<span class="hw-bound"><span class="hw-dot bound"></span>HWID Bound · <code>${m.hwidPreview||'***'}</code></span>`
+      : `<span class="hw-bound"><span class="hw-dot free"></span>HWID Not Bound · waits for first Lua verify</span>`;
+    const extWait = (m.extendWaitMs|0);
+    const rstWait = (m.resetHwidWaitMs|0);
+    const extDisabled = extWait > 0;
+    const rstDisabled = rstWait > 0;
+    card.innerHTML = `
+      <div class="key-card-head">
+        <div class="key-pill ${expired?'pill-expired':'pill-active'}">
+          <span class="kp-dot"></span> ${expired ? 'Expired' : 'Active'}
+        </div>
+        <span class="key-dur">${k.duration||'24hours'}</span>
+      </div>
+      <div class="key-value">${k.key}</div>
+      <div class="key-hwid-row">${hwidLine}</div>
+      <div class="key-meta-row">
+        <div class="key-meta">
+          <small>Created</small>
+          <span>${fmtDate(k.createdAt)}</span>
+        </div>
+        <div class="key-meta">
+          <small>${expired?'Status':'Time Left'}</small>
+          <span class="kc-time" data-expire="${k.expireAt||0}">${fmtRemaining(remaining)}</span>
+        </div>
+      </div>
+      <div class="key-actions key-actions-row">
+        <button class="modal-btn btn-copy" data-key="${k.key}">Copy</button>
+        <button class="modal-btn btn-copy-link">Copy Link</button>
+        <button class="modal-btn modal-btn-ghost btn-check" data-key="${k.key}">Refresh Status</button>
+        <button class="modal-btn modal-btn-warn btn-remove" data-idx="${idx}">Remove</button>
+      </div>
+      <div class="key-actions key-actions-row key-actions-secondary">
+        <button class="modal-btn modal-btn-ghost btn-extend"
+                data-key="${k.key}"
+                data-cd="${extWait}"
+                ${extDisabled?'disabled':''}>
+          ${extDisabled ? 'Extend in <span class="cd">'+fmtCooldown(extWait)+'</span>' : '⏫ Extend +1h'}
+        </button>
+        <button class="modal-btn modal-btn-ghost btn-reset"
+                data-key="${k.key}"
+                data-cd="${rstWait}"
+                ${rstDisabled?'disabled':''}>
+          ${rstDisabled ? 'Reset HWID in <span class="cd">'+fmtCooldown(rstWait)+'</span>' : '🔄 Reset HWID'}
+        </button>
+      </div>
+    `;
+    listEl.appendChild(card);
+  });
+
+  listEl.querySelectorAll('.btn-copy').forEach(b=>{
+    b.addEventListener('click',()=>{
+      navigator.clipboard.writeText(b.dataset.key);
+      b.textContent = 'Copied!';
+      setTimeout(()=>{ b.textContent='Copy'; }, 1200);
+    });
+  });
+  listEl.querySelectorAll('.btn-copy-link').forEach(b=>{
+    b.addEventListener('click',()=>{
+      navigator.clipboard.writeText(window.location.origin + '/getkey');
+      b.textContent = 'Copied!';
+      setTimeout(()=>{ b.textContent='Copy Link'; }, 1200);
+    });
+  });
+  listEl.querySelectorAll('.btn-remove').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const list = loadKeys();
+      list.splice(parseInt(b.dataset.idx,10), 1);
+      saveKeys(list);
+      render();
+    });
+  });
+  listEl.querySelectorAll('.btn-check').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      const orig = b.innerHTML;
+      b.innerHTML = 'Checking...';
+      try{
+        await refreshKey(b.dataset.key);
+        render();
+      }catch(e){
+        b.innerHTML = 'Failed';
+        setTimeout(()=>{ b.innerHTML = orig; }, 1500);
+      }
+    });
+  });
+  listEl.querySelectorAll('.btn-extend').forEach(b=>{
+    b.addEventListener('click', async ()=>{
+      if (b.disabled) return;
+      const orig = b.innerHTML;
+      b.disabled = true;
+      b.innerHTML = 'Extending...';
+      try{
+        const r = await fetch('/api/v1/auth/key/extend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: b.dataset.key }),
+        });
+        const data = await r.json();
+        if (data.success){
+          const list = loadKeys();
+          const i = list.findIndex(x=>x.key===b.dataset.key);
+          if (i>=0){ list[i].expireAt = data.expireAt; saveKeys(list); }
+          await refreshKey(b.dataset.key);
+          render();
+        } else if (data.status === 'cooldown'){
+          meta[b.dataset.key] = Object.assign(meta[b.dataset.key]||{}, {extendWaitMs: data.waitMs});
+          render();
+        } else if (data.status === 'hwid_mismatch'){
+          alert('Hwid not mismatch — this key is bound to a different device.');
+          b.innerHTML = orig; b.disabled = false;
+        } else {
+          alert('Extend failed: ' + (data.status||'unknown'));
+          b.innerHTML = orig; b.disabled = false;
+        }
+      }catch(e){
+        b.innerHTML = orig; b.disabled = false;
+      }
+    });
+  });
+  listEl.querySelectorAll('.btn-reset').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      if (b.disabled) return;
+      window.location.href = '/resethwid?key=' + encodeURIComponent(b.dataset.key);
+    });
+  });
+}
+
+async function refreshKey(key){
+  const r = await fetch('/api/v1/auth/check?key=' + encodeURIComponent(key));
+  const data = await r.json();
+  if (data.success){
+    meta[key] = data;
+    const list = loadKeys();
+    const i = list.findIndex(x=>x.key===key);
+    if (i>=0){
+      list[i].expireAt = data.expireAt;
+      list[i].createdAt = data.createdAt;
+      list[i].duration = data.duration;
+      saveKeys(list);
+    }
+  } else if (r.status === 404){
+    const list = loadKeys();
+    const i = list.findIndex(x=>x.key===key);
+    if (i>=0){ list.splice(i,1); saveKeys(list); }
+  }
+}
+
+async function refreshAll(){
+  const keys = loadKeys();
+  for (const k of keys){
+    try { await refreshKey(k.key); } catch(e){}
+  }
+  render();
+}
+
+setInterval(()=>{
+  document.querySelectorAll('.kc-time').forEach(el=>{
+    const ts = parseInt(el.dataset.expire||'0',10);
+    const ms = ts - Date.now();
+    el.textContent = fmtRemaining(ms);
+    if (ms<=0){
+      const card = el.closest('.key-card');
+      if (card){
+        const pill = card.querySelector('.key-pill');
+        if (pill && !pill.classList.contains('pill-expired')){
+          pill.classList.remove('pill-active');
+          pill.classList.add('pill-expired');
+          pill.innerHTML = '<span class="kp-dot"></span> Expired';
+        }
+      }
+    }
+  });
+  document.querySelectorAll('.btn-extend[disabled], .btn-reset[disabled]').forEach(b=>{
+    let cd = parseInt(b.dataset.cd||'0', 10) - 1000;
+    if (cd <= 0){
+      b.disabled = false;
+      b.dataset.cd = '0';
+      if (b.classList.contains('btn-extend')){
+        b.innerHTML = '⏫ Extend +1h';
+        if (meta[b.dataset.key]) meta[b.dataset.key].extendWaitMs = 0;
+      } else {
+        b.innerHTML = '🔄 Reset HWID';
+        if (meta[b.dataset.key]) meta[b.dataset.key].resetHwidWaitMs = 0;
+      }
+    } else {
+      b.dataset.cd = cd;
+      const cdEl = b.querySelector('.cd');
+      if (cdEl) cdEl.textContent = fmtCooldown(cd);
+      if (b.classList.contains('btn-extend') && meta[b.dataset.key]) meta[b.dataset.key].extendWaitMs = cd;
+      if (b.classList.contains('btn-reset') && meta[b.dataset.key]) meta[b.dataset.key].resetHwidWaitMs = cd;
+    }
+  });
+}, 1000);
+
+setInterval(refreshAll, 30000);
+
+refreshAll();
+</script>
+
+  </body>
+</html>
