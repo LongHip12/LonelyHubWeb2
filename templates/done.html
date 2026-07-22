@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{% if verified %}Your Key{% else %}Key View{% endif %} — Lonely Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/style.css?v=11" />
+<link rel="stylesheet" href="/static/extras.css?v=11" />
+<style>
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .verify-overlay { display:none !important; }
+  .finish-card { max-width:580px; margin:80px auto 40px; padding:32px 26px; text-align:center; }
+  .success-mark { width:78px; height:78px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; color:#fff; }
+  .success-mark.ok { background:linear-gradient(135deg,#10b981,#059669); box-shadow:0 12px 40px rgba(16,185,129,.35); }
+  .success-mark.warn { background:linear-gradient(135deg,#f59e0b,#ef4444); box-shadow:0 12px 40px rgba(239,68,68,.3); }
+  .finish-title { font-size:26px; font-weight:800; color:#fff; margin:6px 0; }
+  .finish-sub { color:rgba(255,255,255,.7); font-size:14px; margin-bottom:18px; }
+  .verify-pill { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:999px; font-size:12.5px; font-weight:700; letter-spacing:.04em; margin-bottom:14px; }
+  .verify-pill.ok { background:rgba(16,185,129,.15); color:#10b981; border:1px solid rgba(16,185,129,.4); }
+  .verify-pill.warn { background:rgba(239,68,68,.15); color:#f87171; border:1px solid rgba(239,68,68,.4); }
+
+  .grad-bar-wrap { margin:14px 0 22px; }
+  .grad-bar-head { display:flex; justify-content:space-between; align-items:center; color:#fff; font-size:12.5px; margin-bottom:8px; opacity:.85; }
+  .grad-bar-track { width:100%; height:10px; border-radius:10px; background:rgba(255,255,255,.08); overflow:hidden; }
+  .grad-bar-fill { height:100%; border-radius:10px; background:linear-gradient(90deg,#10b981,#06b6d4,#7c3aed); background-size:200% 100%; animation:grad-flow 5s linear infinite; box-shadow:0 0 18px rgba(16,185,129,.4); transition:width .8s cubic-bezier(.22,1,.36,1); width:0%; }
+  @keyframes grad-flow { 0%{background-position:0% 50%} 100%{background-position:200% 50%} }
+
+  .key-box { font-family:'JetBrains Mono',monospace; background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.12); padding:16px 14px; border-radius:12px; word-break:break-all; color:#fff; font-size:15px; letter-spacing:.04em; margin-bottom:16px; user-select:all; }
+  .key-box.warn { border-color:rgba(239,68,68,.4); background:rgba(40,10,10,.4); }
+  .key-meta { display:flex; justify-content:center; gap:14px; flex-wrap:wrap; color:rgba(255,255,255,.7); font-size:13px; margin-bottom:20px; }
+  .key-meta b { color:#fff; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+  .modal-btn { flex:1; min-width:180px; padding:13px 18px; border-radius:12px; border:none; background:linear-gradient(135deg,#ef4444,#7c3aed); color:#fff; font-weight:700; font-size:14px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; transition:transform .15s; }
+  .modal-btn:hover { transform:translateY(-1px); }
+  .modal-btn-ghost { background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.16); }
+  .copied-toast { display:inline-block; margin-top:10px; color:#10b981; font-size:13px; opacity:0; transition:opacity .25s; }
+  .copied-toast.show { opacity:1; }
+  .empty-msg { color:rgba(255,255,255,.55); font-style:italic; }
+  .warn-box { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); padding:12px 14px; border-radius:10px; color:#fecaca; font-size:13px; margin-bottom:16px; text-align:left; }
+  .warn-box b { color:#fff; }
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+
+<header class="topbar topbar-v2">
+  <a href="/" class="brand">
+    <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub" class="logo" onerror="this.outerHTML='<span class=&quot;logo logo-text&quot;>LH</span>'"/>
+    <span class="brand-name">Lonely Hub</span>
+  </a>
+</header>
+
+<main class="container container-narrow">
+  <div class="glass card finish-card anim-pop">
+    <div class="success-mark {% if verified %}ok{% else %}warn{% endif %}">
+      {% if verified %}
+        <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5L20 7"/></svg>
+      {% else %}
+        <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      {% endif %}
+    </div>
+
+    {% if verified %}
+      <span class="verify-pill ok">VERIFIED · Server-issued</span>
+      <h1 class="finish-title">Your Key is Ready</h1>
+      <p class="finish-sub">Save it now — you can find it again on the My Keys page.</p>
+    {% else %}
+      <span class="verify-pill warn">UNVERIFIED · Display only</span>
+      <h1 class="finish-title">Key View</h1>
+      <p class="finish-sub">This key was not issued by the server in this session. It will not validate when used.</p>
+    {% endif %}
+
+    <div class="grad-bar-wrap">
+      <div class="grad-bar-head">
+        <span>Verification</span>
+        <span><b>{% if verified %}Complete{% else %}Display only{% endif %}</b></span>
+      </div>
+      <div class="grad-bar-track">
+        <div class="grad-bar-fill" id="gradFill"></div>
+      </div>
+    </div>
+
+    {% if not verified %}
+      <div class="warn-box">
+        <b>Heads up.</b> The <code>?key=</code> in your URL was edited or expired. The text is shown below for your reference, but it is <b>not usable</b> in the script — only keys generated by the server work.
+      </div>
+    {% endif %}
+
+    <div id="keyBox" class="key-box {% if not verified %}warn{% endif %}">
+      {% if key %}{{ key }}{% else %}<span class="empty-msg">No key in URL</span>{% endif %}
+    </div>
+
+    {% if verified %}
+      <div class="key-meta">
+        <span>Method: <b>{{ method }}</b></span>
+        <span>Duration: <b>{{ duration }}</b></span>
+      </div>
+    {% endif %}
+
+    <div class="actions">
+      <button id="copyBtn" class="modal-btn" {% if not key %}disabled{% endif %}>Copy Key</button>
+      <a href="/mykeys" class="modal-btn modal-btn-ghost">Open My Keys</a>
+    </div>
+    <div id="copied" class="copied-toast">Copied to clipboard</div>
+  </div>
+</main>
+
+<script>
+const KEY_VALUE = {{ key | tojson }};
+const KEY_DURATION = {{ duration | tojson }};
+const KEY_METHOD = {{ method | tojson }};
+const KEY_EXPIRE = {{ expire_at | tojson }};
+const VERIFIED = {{ 'true' if verified else 'false' }};
+
+setTimeout(function(){
+  const fill = document.getElementById('gradFill');
+  fill.style.width = (VERIFIED ? 100 : 30) + '%';
+}, 80);
+
+const copyBtn = document.getElementById('copyBtn');
+if (copyBtn && KEY_VALUE) {
+  copyBtn.addEventListener('click', async function(){
+    try {
+      await navigator.clipboard.writeText(KEY_VALUE);
+      const t = document.getElementById('copied');
+      t.classList.add('show');
+      setTimeout(function(){ t.classList.remove('show'); }, 1500);
+    } catch(e) {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById('keyBox'));
+      const s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      try { document.execCommand('copy'); } catch(_){}
+    }
+  });
+}
+
+if (VERIFIED && KEY_VALUE) {
+  try {
+    const list = JSON.parse(localStorage.getItem('lonely_keys') || '[]');
+    if (!list.some(function(x){ return x && x.key === KEY_VALUE; })) {
+      list.unshift({
+        key: KEY_VALUE,
+        duration: KEY_DURATION,
+        method: KEY_METHOD,
+        expireAt: KEY_EXPIRE,
+        createdAt: Date.now()
+      });
+      localStorage.setItem('lonely_keys', JSON.stringify(list.slice(0, 50)));
+    }
+  } catch(e) {}
+}
+</script>
+</body>
+</html>
