@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Verify Step {{ step }}/{{ total }} — Lonely Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/style.css?v=11" />
+<link rel="stylesheet" href="/static/extras.css?v=11" />
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+<style>
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  .verify-overlay { display:none !important; }
+  .step-card { max-width:540px; margin:80px auto 40px; padding:32px 26px; }
+  .step-pill { display:inline-flex; align-items:center; gap:8px; background:linear-gradient(135deg,#ef4444,#7c3aed); color:#fff; padding:6px 14px; border-radius:20px; font-weight:700; font-size:13px; letter-spacing:.04em; }
+  .step-pill .num { background:rgba(255,255,255,.18); padding:2px 8px; border-radius:12px; font-size:12px; }
+  .step-title { font-size:24px; font-weight:800; color:#fff; margin:14px 0 6px; }
+  .step-sub { color:rgba(255,255,255,.7); font-size:14px; margin-bottom:18px; }
+  .meta-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; color:rgba(255,255,255,.7); font-size:12.5px; margin-bottom:18px; }
+  .meta-row span { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); padding:4px 10px; border-radius:999px; }
+  .meta-row b { color:#fff; }
+
+  .grad-bar-wrap { margin:14px 0 22px; }
+  .grad-bar-head { display:flex; justify-content:space-between; align-items:center; color:#fff; font-size:12.5px; margin-bottom:8px; opacity:.85; }
+  .grad-bar-head b { font-weight:800; }
+  .grad-bar-track { width:100%; height:10px; border-radius:10px; background:rgba(255,255,255,.08); overflow:hidden; position:relative; }
+  .grad-bar-fill { height:100%; border-radius:10px; background:linear-gradient(90deg,#ef4444,#f59e0b,#7c3aed,#06b6d4); background-size:300% 100%; transition:width .6s cubic-bezier(.22,1,.36,1); animation:grad-flow 6s linear infinite; box-shadow:0 0 18px rgba(124,58,237,.45); }
+  @keyframes grad-flow { 0%{background-position:0% 50%} 100%{background-position:300% 50%} }
+
+  .progress-row { display:flex; gap:6px; justify-content:center; margin-top:6px; }
+  .progress-dot { flex:1; max-width:48px; height:6px; border-radius:3px; background:rgba(255,255,255,.12); transition:background .25s; }
+  .progress-dot.done { background:linear-gradient(135deg,#10b981,#059669); }
+  .progress-dot.cur { background:linear-gradient(135deg,#ef4444,#7c3aed); box-shadow:0 0 8px rgba(124,58,237,.5); }
+
+  .captcha-host { display:flex; justify-content:center; align-items:center; min-height:78px; margin:8px 0; }
+  .modal-btn { width:100%; padding:14px; border-radius:12px; border:none; background:linear-gradient(135deg,#ef4444,#7c3aed); color:#fff; font-weight:700; font-size:15px; cursor:pointer; margin-top:10px; transition:transform .15s, opacity .15s; }
+  .modal-btn:disabled { opacity:.55; cursor:not-allowed; }
+  .modal-btn:not(:disabled):hover { transform:translateY(-1px); }
+  .step-status { text-align:center; margin-top:12px; font-size:13px; color:#fff; opacity:.85; min-height:18px; }
+
+  .cap-stage .cap-host-hc { display:none; }
+  .cap-stage[data-stage="hc"] .cap-host-cf { display:none; }
+  .cap-stage[data-stage="hc"] .cap-host-hc { display:flex; }
+  .cap-stage[data-stage="done"] .cap-host-cf,
+  .cap-stage[data-stage="done"] .cap-host-hc { display:none; }
+  .cap-stage[data-stage="done"] .cap-progress { opacity:.85; }
+  .cap-progress { display:flex; align-items:center; gap:12px; margin:18px 0 10px; }
+  .cap-step { display:flex; align-items:center; gap:8px; color:#fff; font-size:12.5px; font-weight:600; opacity:.5; transition:opacity .25s; }
+  .cap-step.active { opacity:1; }
+  .cap-step.done { opacity:1; color:#10b981; }
+  .cap-dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.2); border:2px solid rgba(255,255,255,.35); transition:all .25s; }
+  .cap-step.active .cap-dot { background:#ef4444; border-color:#ef4444; box-shadow:0 0 0 4px rgba(239,68,68,.18); }
+  .cap-step.done .cap-dot { background:#10b981; border-color:#10b981; box-shadow:0 0 0 4px rgba(16,185,129,.18); }
+  .cap-bar { flex:1; height:3px; border-radius:3px; background:rgba(255,255,255,.08); overflow:hidden; }
+  .cap-bar-fill { height:100%; width:0%; background:linear-gradient(90deg,#ef4444,#7c3aed); transition:width .35s ease; }
+  .cap-stage[data-stage="hc"] .cap-bar-fill { width:50%; }
+  .cap-stage[data-stage="done"] .cap-bar-fill { width:100%; }
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+
+<header class="topbar topbar-v2">
+  <a href="/" class="brand">
+    <img src="https://i.imgur.com/xY7M2iE.jpeg" alt="Lonely Hub" class="logo" onerror="this.outerHTML='<span class=&quot;logo logo-text&quot;>LH</span>'"/>
+    <span class="brand-name">Lonely Hub</span>
+  </a>
+</header>
+
+<main class="container container-narrow">
+  <div class="glass card step-card anim-pop">
+    <div style="text-align:center">
+      <span class="step-pill">Verification <span class="num">{{ step }}/{{ total }}</span></span>
+      <h1 class="step-title">Verify to continue</h1>
+      <p class="step-sub">Solve Cloudflare first, then hCaptcha. Then click Continue for your next short link.</p>
+      <div class="meta-row">
+        <span>Method: <b>{{ method }}</b></span>
+        <span>Duration: <b>{{ duration }}</b></span>
+      </div>
+    </div>
+
+    <div class="grad-bar-wrap">
+      <div class="grad-bar-head">
+        <span>Progress</span>
+        <span><b id="progLabel">{{ step }} / {{ total }}</b></span>
+      </div>
+      <div class="grad-bar-track">
+        <div id="gradFill" class="grad-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="progress-row">
+        {% for i in range(1, total + 1) %}
+          <span class="progress-dot {% if i < step %}done{% elif i == step %}cur{% endif %}"></span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div id="capStage" class="cap-stage" data-stage="cf">
+      <div class="cap-progress">
+        <div class="cap-step active" data-step="cf"><span class="cap-dot"></span>Cloudflare</div>
+        <div class="cap-bar"><div class="cap-bar-fill"></div></div>
+        <div class="cap-step" data-step="hc"><span class="cap-dot"></span>hCaptcha</div>
+      </div>
+      <div class="captcha-host cap-host-cf">
+        <div class="cf-turnstile" data-sitekey="{{ cf_sitekey }}" data-callback="onCfVerify" data-theme="dark"></div>
+      </div>
+      <div class="captcha-host cap-host-hc">
+        <div class="h-captcha" data-sitekey="{{ hcaptcha_sitekey }}" data-callback="onHcVerify" data-theme="dark"></div>
+      </div>
+    </div>
+
+    <button id="continueBtn" data-no-global="1" class="modal-btn" disabled>Verify you are not a robot</button>
+    <div id="status" class="step-status"></div>
+  </div>
+</main>
+
+<script src="/static/script.js?v=11"></script>
+<script>
+const SID = {{ sid | tojson }};
+const STEP = {{ step }};
+const TOTAL = {{ total }};
+const METHOD = {{ method | tojson }};
+const DURATION = {{ duration | tojson }};
+let cfToken = null, hcToken = null;
+
+const btn = document.getElementById('continueBtn');
+const statusEl = document.getElementById('status');
+const capStage = document.getElementById('capStage');
+const capStepCf = document.querySelector('.cap-step[data-step="cf"]');
+const capStepHc = document.querySelector('.cap-step[data-step="hc"]');
+const gradFill = document.getElementById('gradFill');
+
+(function fillGrad(){
+  const ratio = TOTAL > 0 ? (STEP / TOTAL) * 100 : 0;
+  setTimeout(function(){ gradFill.style.width = ratio + '%'; }, 60);
+})();
+
+function setStage(s){
+  capStage.dataset.stage = s;
+  if (s === 'cf') {
+    capStepCf.classList.add('active'); capStepCf.classList.remove('done');
+    capStepHc.classList.remove('active','done');
+  } else if (s === 'hc') {
+    capStepCf.classList.remove('active'); capStepCf.classList.add('done');
+    capStepHc.classList.add('active'); capStepHc.classList.remove('done');
+  } else if (s === 'done') {
+    capStepCf.classList.remove('active'); capStepCf.classList.add('done');
+    capStepHc.classList.remove('active'); capStepHc.classList.add('done');
+  }
+}
+
+function refreshBtn(){
+  if (cfToken && hcToken) {
+    btn.disabled = false;
+    btn.textContent = (STEP + 1 >= TOTAL) ? 'Continue to your key' : 'Continue to next link';
+  } else if (cfToken) {
+    btn.disabled = true;
+    btn.textContent = 'Solve hCaptcha to continue';
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Verify you are not a robot';
+  }
+}
+
+window.onCfVerify = function(t){
+  cfToken = t;
+  setStage('hc');
+  refreshBtn();
+  try { window.hcaptcha && window.hcaptcha.reset && window.hcaptcha.reset(); } catch(e){}
+};
+window.onHcVerify = function(t){
+  hcToken = t;
+  setStage('done');
+  refreshBtn();
+};
+
+try {
+  const cur = JSON.parse(sessionStorage.getItem('lonely_session') || '{}');
+  cur.sid = SID; cur.total = TOTAL; cur.nextStep = STEP; cur.method = METHOD; cur.duration = DURATION;
+  sessionStorage.setItem('lonely_session', JSON.stringify(cur));
+} catch(e){}
+
+btn.addEventListener('click', async function(){
+  if (!cfToken || !hcToken) { statusEl.textContent = 'Please solve both captchas.'; return; }
+  btn.disabled = true;
+  btn.textContent = 'Generating next short link...';
+  statusEl.textContent = '';
+  try {
+    const hwid = (window.LonelyHub && LonelyHub.getHwid) ? LonelyHub.getHwid() : '';
+    const r = await fetch('/api/v1/auth/getkey/continue', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-HWID': hwid},
+      body: JSON.stringify({sessionId: SID, step: STEP, cf_token: cfToken, hcaptcha_token: hcToken})
+    });
+    const data = await r.json();
+    if (data.status === 'ok' && data.shortUrl) {
+      try {
+        const cur = JSON.parse(sessionStorage.getItem('lonely_session') || '{}');
+        cur.sid = SID; cur.total = TOTAL; cur.nextStep = STEP + 1;
+        sessionStorage.setItem('lonely_session', JSON.stringify(cur));
+      } catch(e){}
+      gradFill.style.width = (((STEP + 0.5) / TOTAL) * 100) + '%';
+      statusEl.textContent = 'Redirecting...';
+      window.location.href = data.shortUrl;
+      return;
+    }
+    if (data.status === 'blocked' || data.status === 'bypass_detected' || data.status === 'verify_failed') {
+      window.location.href = '/blocked';
+      return;
+    }
+    statusEl.textContent = 'Error: ' + (data.message || data.status || 'unknown');
+    cfToken = null; hcToken = null;
+    setStage('cf');
+    try { window.turnstile && window.turnstile.reset(); } catch(e){}
+    try { window.hcaptcha && window.hcaptcha.reset(); } catch(e){}
+    refreshBtn();
+  } catch (e) {
+    statusEl.textContent = 'Network error: ' + e.message;
+    refreshBtn();
+  }
+});
+</script>
+</body>
+</html>
