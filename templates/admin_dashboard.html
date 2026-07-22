@@ -1,0 +1,1096 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard — Lonely Hub{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="dashboard-page">
+<div class="container">
+
+  <div class="dashboard-header">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <div style="width:48px;height:48px;border-radius:50%;background:rgba(250,80,80,0.12);border:2px solid rgba(250,80,80,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      </div>
+      <div>
+        <div class="dashboard-title">Admin Dashboard</div>
+        <div class="dashboard-subtitle">@{{ user.username }} · Site Control Panel</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="/api/v1/auth/admin?type=users" class="btn btn-ghost btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Manage Users
+      </a>
+      <a href="/" class="btn btn-secondary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        View Site
+      </a>
+    </div>
+  </div>
+
+  <div class="dash-stats-grid">
+    <div class="dash-stat-card views">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_users }}">0</div>
+      <div class="dash-stat-label">Total Users</div>
+    </div>
+    <div class="dash-stat-card mods">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_mods }}">0</div>
+      <div class="dash-stat-label">Total Mods</div>
+    </div>
+    <div class="dash-stat-card downloads">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_downloads }}">0</div>
+      <div class="dash-stat-label">Downloads</div>
+    </div>
+    <div class="dash-stat-card" style="--accent:#4ade80;">
+      <div class="dash-stat-card-accent-bar" style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#4ade80,#34d399);border-radius:14px 14px 0 0;"></div>
+      <div class="dash-stat-icon" style="background:rgba(74,222,128,0.12);color:#4ade80;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_views }}">0</div>
+      <div class="dash-stat-label">Total Views</div>
+    </div>
+    <div class="dash-stat-card views-today">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ views_today }}">0</div>
+      <div class="dash-stat-label">Views Today</div>
+    </div>
+    <div class="dash-stat-card downloads-today">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ downloads_today }}">0</div>
+      <div class="dash-stat-label">Downloads Today</div>
+    </div>
+    <div class="dash-stat-card active">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4l3 3"></path></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ active_now }}">0</div>
+      <div class="dash-stat-label">Active Sessions</div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      Activity — Last 14 Days
+    </div>
+    <div class="chart-wrap">
+      <canvas id="siteChart"></canvas>
+    </div>
+  </div>
+
+  <div class="dash-grid-2">
+    <div class="dash-section" style="margin-bottom:0;">
+      <div class="dash-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Top Mods by Views
+      </div>
+      {% if top_mods %}
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table class="dash-table" style="min-width:320px;">
+        <thead><tr><th>#</th><th>Mod</th><th>Views</th><th>DL</th><th>★</th></tr></thead>
+        <tbody>
+        {% for m in top_mods %}
+        <tr>
+          <td><span class="dash-rank {% if loop.index == 1 %}top1{% elif loop.index == 2 %}top2{% elif loop.index == 3 %}top3{% endif %}">{{ loop.index }}</span></td>
+          <td><a href="/mods/{{ m.id }}/info" class="mod-name" style="color:var(--text);text-decoration:none;">{{ m.name }}</a></td>
+          <td><span class="num">{{ m.views }}</span></td>
+          <td><span class="num" style="color:var(--green);">{{ m.downloads }}</span></td>
+          <td><span style="color:#fbbf24;font-size:12px;font-weight:700;">{{ "%.1f"|format(m.avg_rating) }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      {% else %}
+      <div style="text-align:center;color:var(--text3);padding:32px;font-size:14px;">No mods yet.</div>
+      {% endif %}
+    </div>
+
+    <div class="dash-section" style="margin-bottom:0;">
+      <div class="dash-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+        Recent Users
+      </div>
+      {% if recent_users %}
+      <div>
+      {% for u in recent_users %}
+      <div class="user-row">
+        <img src="{{ u.avatar if u.avatar else 'https://i.imgur.com/BCzwCla.png' }}" alt="{{ u.username }}" class="user-row-avatar" onerror="this.onerror=null;this.src='https://i.imgur.com/BCzwCla.png'">
+        <div style="flex:1;min-width:0;">
+          <div class="user-row-name">{{ u.display_name if u.display_name else u.username }}</div>
+          <div class="user-row-time">@{{ u.username }} · Joined {{ u.created_at[:10] if u.created_at else '—' }}</div>
+        </div>
+        <div class="user-row-tag">
+          {% if u.tag == 'admin' %}
+          <span class="dash-rank" style="background:rgba(96,165,250,.15);color:#60a5fa;width:auto;padding:0 6px;">Admin</span>
+          {% else %}
+          <span class="dash-rank">User</span>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+      {% else %}
+      <div style="text-align:center;color:var(--text3);padding:32px;font-size:14px;">No users yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="dash-grid-2" style="margin-top:0;">
+    <div class="dash-section" style="margin-bottom:0;">
+      <div class="dash-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+        Trending Today
+      </div>
+      {% if trending %}
+      <div>
+      {% for m in trending %}
+      <div class="user-row">
+        <div style="flex:1;min-width:0;">
+          <div class="user-row-name"><a href="/mods/{{ m.id }}/info" style="color:var(--text);text-decoration:none;">{{ m.name }}</a></div>
+          <div class="user-row-time">{{ m.daily_stats.get(today_str, {}).get('views', 0) if m.daily_stats else 0 }} views today</div>
+        </div>
+      </div>
+      {% endfor %}
+      </div>
+      {% else %}
+      <div style="text-align:center;color:var(--text3);padding:32px;font-size:14px;">No trending data.</div>
+      {% endif %}
+    </div>
+
+    <div class="dash-section" style="margin-bottom:0;">
+      <div class="dash-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+        Top Tags
+      </div>
+      <div class="tag-cloud" style="padding-top:4px;">
+        {% for tag, count in top_tags %}
+        <span class="tag-pill">{{ tag }} <span class="tag-count">{{ count }}</span></span>
+        {% endfor %}
+        {% if not top_tags %}
+        <div style="color:var(--text3);font-size:13px;">No tags yet.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section" style="margin-top:0;">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+      Settings
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <label style="font-size:13px;color:var(--text3);">API Rate Limit (req/min):</label>
+      <form id="rateLimitForm" style="display:flex;align-items:center;gap:8px;">
+        <input type="number" id="rateLimitInput" value="{{ api_rate_limit }}" min="1" max="9999"
+          style="width:80px;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:6px;padding:6px 8px;font-size:13px;font-family:inherit;">
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+        <span id="rateLimitMsg" style="display:none;color:#4ade80;font-size:12px;">Saved!</span>
+      </form>
+    </div>
+  </div>
+
+  <div class="dash-section" style="margin-top:0;">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg>
+      Backup & Data
+    </div>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:13px;flex-wrap:wrap;">
+      <span style="color:var(--text3);">Last backup:</span>
+      <span id="lbsDot" style="width:8px;height:8px;border-radius:50%;background:#334155;display:inline-block;"></span>
+      <span id="lbsTime" style="color:var(--text2);">—</span>
+      <span id="lbsLabel" style="display:none;font-size:10px;border-radius:4px;padding:1px 7px;font-weight:600;"></span>
+      <span id="lbsId" style="color:var(--text3);font-family:monospace;font-size:11px;">—</span>
+    </div>
+
+    <div id="supabaseSetupNotice" style="display:none;align-items:center;gap:8px;background:#1c1004;border:1px solid #78350f;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#fbbf24;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+      Supabase not configured. Set <code style="background:#2d1a00;padding:1px 5px;border-radius:3px;">SUPABASE_URL</code> and <code style="background:#2d1a00;padding:1px 5px;border-radius:3px;">SUPABASE_SERVICE_KEY</code> env vars. Auto-backup saves every 5 min, auto-restore every 15 min.
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:24px;">
+      <button id="saveDataBtn" class="btn btn-ghost btn-sm" style="gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Download Backup
+      </button>
+      <button id="cloudBackupBtn" class="btn btn-secondary btn-sm" style="gap:6px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg>
+        Save to Cloud
+      </button>
+      <button id="restoreLatestBtn" class="btn btn-ghost btn-sm" style="gap:6px;border-color:rgba(251,191,36,0.3);color:#fbbf24;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-3.87L1 10"></path></svg>
+        Restore Latest
+      </button>
+      <span id="backupActionMsg" style="display:none;font-size:12px;font-weight:600;"></span>
+    </div>
+
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div class="dash-section-title" style="margin-bottom:0;">Backup History</div>
+        <button onclick="loadBackupFull()" class="btn btn-ghost btn-sm" id="bhRefreshBtn">↻ Refresh</button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">
+        <div class="dash-stat-card" style="padding:14px 16px;text-align:center;">
+          <div id="bhStatTotal" class="dash-stat-value">—</div>
+          <div class="dash-stat-label">Total</div>
+        </div>
+        <div class="dash-stat-card" style="padding:14px 16px;text-align:center;">
+          <div id="bhStatAuto" class="dash-stat-value" style="color:#94a3b8;">—</div>
+          <div class="dash-stat-label">Auto</div>
+        </div>
+        <div class="dash-stat-card" style="padding:14px 16px;text-align:center;">
+          <div id="bhStatManual" class="dash-stat-value" style="color:#60a5fa;">—</div>
+          <div class="dash-stat-label">Manual</div>
+        </div>
+        <div class="dash-stat-card" style="padding:14px 16px;text-align:center;">
+          <div id="bhStatLast" class="dash-stat-value" style="font-size:14px;color:#4ade80;">—</div>
+          <div class="dash-stat-label">Last Backup</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 160px;gap:12px;margin-bottom:14px;">
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px;height:120px;">
+          <canvas id="bhBarChart"></canvas>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px;height:120px;">
+          <canvas id="bhPieChart"></canvas>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;">
+        <input id="bhSearch" type="text" placeholder="Search by label or ID…" oninput="applyBhFilters()"
+          style="flex:1;min-width:140px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text);border-radius:8px;padding:7px 12px;font-size:12px;font-family:inherit;outline:none;">
+        <div id="bhTypeDropdown" style="position:relative;display:inline-block;">
+          <button id="bhTypeBtn" onclick="toggleBhTypeDropdown(event)" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text2);border-radius:8px;padding:7px 10px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;">
+            <span id="bhTypeLabel">All types</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div id="bhTypeMenu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:4px;min-width:130px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.5);">
+            <div onclick="setBhType('','All types')" style="padding:7px 12px;font-size:12px;color:var(--text2);cursor:pointer;border-radius:5px;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background=''">All types</div>
+            <div onclick="setBhType('Auto','Auto')" style="padding:7px 12px;font-size:12px;color:var(--text2);cursor:pointer;border-radius:5px;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background=''">Auto</div>
+            <div onclick="setBhType('Manual','Manual')" style="padding:7px 12px;font-size:12px;color:var(--text2);cursor:pointer;border-radius:5px;" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background=''">Manual</div>
+          </div>
+        </div>
+        <input id="bhDateFrom" type="date" onchange="applyBhFilters()"
+          style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text2);border-radius:8px;padding:7px 10px;font-size:12px;font-family:inherit;">
+        <input id="bhDateTo" type="date" onchange="applyBhFilters()"
+          style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text2);border-radius:8px;padding:7px 10px;font-size:12px;font-family:inherit;">
+        <button onclick="clearBhFilters()" class="btn btn-ghost btn-sm">Clear</button>
+        <span id="bhFilterCount" style="font-size:11px;color:var(--text3);"></span>
+      </div>
+
+      <div id="bhTableBody" style="max-height:300px;overflow-y:auto;border-radius:10px;border:1px solid rgba(255,255,255,0.06);">
+        <div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+var ICON_DL    = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>';
+var ICON_CLOUD = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg>';
+var ICON_RESTORE = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 .49-3.87L1 10"></path></svg>';
+
+var bhAllBackups = [];
+var bhBarChart = null, bhPieChart = null;
+
+function makeGradient(ctx, colorTop, colorBottom) {
+  var g = ctx.createLinearGradient(0, 0, 0, 200);
+  g.addColorStop(0, colorTop);
+  g.addColorStop(1, colorBottom);
+  return g;
+}
+
+(function() {
+  var cards = document.querySelectorAll('[data-count]');
+  cards.forEach(function(card) {
+    var target = parseInt(card.getAttribute('data-count')) || 0;
+    if (target === 0) { card.textContent = '0'; return; }
+    var duration = 900;
+    var start = Date.now();
+    function tick() {
+      var elapsed = Date.now() - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      card.textContent = Math.round(eased * target).toLocaleString();
+      if (progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  });
+})();
+
+document.addEventListener('DOMContentLoaded', function() {
+  var form = document.getElementById('rateLimitForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var val = parseInt(document.getElementById('rateLimitInput').value);
+      if (!val || val < 1) return;
+      var btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      fetch('/api/admin/rate-limit', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({api_rate_limit: val})
+      }).then(function(r){ return r.json(); }).then(function(d){
+        btn.disabled = false; btn.textContent = 'Save';
+        if (d.success) {
+          var msg = document.getElementById('rateLimitMsg');
+          msg.style.display = 'inline';
+          setTimeout(function(){ msg.style.display = 'none'; }, 2000);
+        }
+      }).catch(function(){ btn.disabled = false; btn.textContent = 'Save'; });
+    });
+  }
+
+  document.getElementById('saveDataBtn').addEventListener('click', downloadData);
+  document.getElementById('cloudBackupBtn').addEventListener('click', backupToCloud);
+  document.getElementById('restoreLatestBtn').addEventListener('click', restoreLatest);
+
+  var chartLabels = {{ chart_labels | tojson }};
+  var viewsData   = {{ chart_views | tojson }};
+  var dlData      = {{ chart_downloads | tojson }};
+  var siteCtx = document.getElementById('siteChart').getContext('2d');
+  new Chart(siteCtx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Views',
+          data: viewsData,
+          borderColor: '#60a5fa',
+          backgroundColor: makeGradient(siteCtx, 'rgba(96,165,250,0.3)', 'rgba(96,165,250,0.01)'),
+          borderWidth: 2.5, tension: 0.42, fill: true,
+          pointRadius: 3, pointBackgroundColor: '#60a5fa', pointHoverRadius: 5,
+        },
+        {
+          label: 'Downloads',
+          data: dlData,
+          borderColor: '#4ade80',
+          backgroundColor: makeGradient(siteCtx, 'rgba(74,222,128,0.2)', 'rgba(74,222,128,0.01)'),
+          borderWidth: 2.5, tension: 0.42, fill: true,
+          pointRadius: 3, pointBackgroundColor: '#4ade80', pointHoverRadius: 5,
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#a0a0b0', font: { size: 12 }, boxWidth: 12, boxHeight: 12 } },
+        tooltip: { backgroundColor: 'rgba(14,14,22,0.95)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, titleColor: '#f0f0f5', bodyColor: '#a0a0b0', padding: 12 }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#606070', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#606070', font: { size: 11 }, precision: 0 }, beginAtZero: true }
+      }
+    }
+  });
+
+  checkSupabaseConfig();
+});
+
+function downloadData() {
+  var btn = document.getElementById('saveDataBtn');
+  btn.disabled = true;
+  btn.innerHTML = ICON_DL + ' Downloading...';
+  window.location.href = '/api/admin/save-data';
+  setTimeout(function(){
+    btn.disabled = false;
+    btn.innerHTML = ICON_DL + ' Download Backup';
+    loadBackupFull();
+  }, 4000);
+}
+
+function backupToCloud() {
+  var btn = document.getElementById('cloudBackupBtn');
+  btn.disabled = true;
+  btn.innerHTML = ICON_CLOUD + ' Saving...';
+  fetch('/api/admin/backup-to-cloud', {method:'POST'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      btn.disabled = false;
+      btn.innerHTML = ICON_CLOUD + ' Save to Cloud';
+      if (d.success) {
+        showBackupMsg('Saved to Supabase!', '#22c55e');
+        loadBackupFull();
+      } else if (d.error && d.error.indexOf('not configured') !== -1) {
+        showBackupMsg('Set SUPABASE_URL & SUPABASE_SERVICE_KEY env vars', '#f59e0b');
+      } else {
+        showBackupMsg('Error: ' + d.error, '#ef4444');
+      }
+    })
+    .catch(function(){ btn.disabled = false; btn.innerHTML = ICON_CLOUD + ' Save to Cloud'; showBackupMsg('Connection error', '#ef4444'); });
+}
+
+function restoreLatest() {
+  var btn = document.getElementById('restoreLatestBtn');
+  btn.disabled = true;
+  btn.innerHTML = ICON_RESTORE + ' Restoring...';
+  fetch('/api/admin/restore-latest', {method:'POST'})
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      btn.disabled = false;
+      btn.innerHTML = ICON_RESTORE + ' Restore Latest';
+      if (d.success) {
+        showBackupMsg('Restored from ' + (d.restored || '?'), '#22c55e');
+      } else {
+        showBackupMsg('Error: ' + (d.error || 'Unknown'), '#ef4444');
+      }
+    })
+    .catch(function(){ btn.disabled = false; btn.innerHTML = ICON_RESTORE + ' Restore Latest'; showBackupMsg('Connection error', '#ef4444'); });
+}
+
+function showBackupMsg(text, color) {
+  var el = document.getElementById('backupActionMsg');
+  el.textContent = text;
+  el.style.color = color;
+  el.style.display = 'inline';
+  setTimeout(function(){ el.style.display = 'none'; }, 3000);
+}
+
+function updateLastBackupStatus(b, notConfigured) {
+  var dot  = document.getElementById('lbsDot');
+  var time = document.getElementById('lbsTime');
+  var lbl  = document.getElementById('lbsLabel');
+  var idEl = document.getElementById('lbsId');
+  if (!dot) return;
+  if (notConfigured) {
+    dot.style.background = '#f59e0b';
+    time.textContent = 'Supabase not configured';
+    lbl.style.display = 'none';
+    idEl.textContent = '—';
+    return;
+  }
+  if (!b) {
+    dot.style.background = '#334155';
+    time.textContent = 'No backups yet';
+    lbl.style.display = 'none';
+    idEl.textContent = '—';
+    return;
+  }
+  var dt = new Date(b.created_at);
+  var isAuto = b.label === 'Auto';
+  dot.style.background = '#22c55e';
+  time.textContent = dt.toLocaleString();
+  lbl.style.display = 'inline';
+  lbl.textContent = b.label;
+  lbl.style.background = isAuto ? 'rgba(148,163,184,.12)' : 'rgba(96,165,250,.12)';
+  lbl.style.color      = isAuto ? '#94a3b8' : '#60a5fa';
+  idEl.textContent = b.id.slice(0, 8) + '…';
+  idEl.title = b.id;
+}
+
+function checkSupabaseConfig() {
+  fetch('/api/admin/supabase-status')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var cloudBtn = document.getElementById('cloudBackupBtn');
+      var restBtn  = document.getElementById('restoreLatestBtn');
+      var notice   = document.getElementById('supabaseSetupNotice');
+      if (!d.configured) {
+        updateLastBackupStatus(null, true);
+        if (cloudBtn) { cloudBtn.disabled = true; cloudBtn.style.opacity = '0.4'; cloudBtn.style.cursor = 'not-allowed'; }
+        if (restBtn)  { restBtn.disabled  = true; restBtn.style.opacity  = '0.4'; restBtn.style.cursor  = 'not-allowed'; }
+        if (notice) notice.style.display = 'flex';
+        var tbody = document.getElementById('bhTableBody');
+        if (tbody) tbody.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;">Supabase not configured.</div>';
+      } else {
+        if (notice) notice.style.display = 'none';
+        loadBackupFull();
+      }
+    })
+    .catch(function(){ loadBackupFull(); });
+}
+
+function loadBackupFull() {
+  var btn = document.getElementById('bhRefreshBtn');
+  if (btn) btn.disabled = true;
+  fetch('/api/admin/backups?limit=50')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (btn) btn.disabled = false;
+      if (!d.success) { showBackupMsg((d.error || 'Error'), '#ef4444'); return; }
+      bhAllBackups = d.backups || [];
+      renderBhStats(bhAllBackups);
+      renderBhCharts(bhAllBackups);
+      applyBhFilters();
+    })
+    .catch(function(){
+      if (btn) btn.disabled = false;
+      showBackupMsg('Connection error', '#ef4444');
+    });
+}
+
+function renderBhStats(backups) {
+  var auto = backups.filter(function(b){ return b.label === 'Auto'; }).length;
+  var manual = backups.length - auto;
+  document.getElementById('bhStatTotal').textContent = backups.length;
+  document.getElementById('bhStatAuto').textContent = auto;
+  document.getElementById('bhStatManual').textContent = manual;
+  if (backups.length) {
+    var dt = new Date(backups[0].created_at);
+    document.getElementById('bhStatLast').textContent = dt.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'});
+    updateLastBackupStatus(backups[0]);
+  } else {
+    document.getElementById('bhStatLast').textContent = 'None yet';
+    updateLastBackupStatus(null);
+  }
+}
+
+function renderBhCharts(backups) {
+  var last7 = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(); d.setDate(d.getDate() - i);
+    var ds = d.toISOString().slice(0, 10);
+    var count = backups.filter(function(b){ return b.created_at && b.created_at.slice(0,10) === ds; }).length;
+    last7.push({ label: ds.slice(5), count: count });
+  }
+  if (bhBarChart) { bhBarChart.destroy(); bhBarChart = null; }
+  if (bhPieChart) { bhPieChart.destroy(); bhPieChart = null; }
+  var barCtx = document.getElementById('bhBarChart').getContext('2d');
+  bhBarChart = new Chart(barCtx, {
+    type: 'bar',
+    data: {
+      labels: last7.map(function(x){ return x.label; }),
+      datasets: [{ label: 'Backups', data: last7.map(function(x){ return x.count; }), backgroundColor: 'rgba(96,165,250,0.5)', borderRadius: 4 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#606070', font: { size: 9 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#606070', font: { size: 9 }, precision: 0 }, beginAtZero: true }
+      }
+    }
+  });
+  var auto = backups.filter(function(b){ return b.label === 'Auto'; }).length;
+  var manual = backups.length - auto;
+  var pieCtx = document.getElementById('bhPieChart').getContext('2d');
+  bhPieChart = new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Auto', 'Manual'],
+      datasets: [{ data: [auto, manual], backgroundColor: ['rgba(148,163,184,0.7)', 'rgba(96,165,250,0.7)'], borderWidth: 0 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#a0a0b0', font: { size: 9 }, boxWidth: 10, padding: 6 } }
+      }
+    }
+  });
+}
+
+var bhFiltered = [];
+var _bhTypeVal = '';
+
+function setBhType(val, label) {
+  _bhTypeVal = val;
+  document.getElementById('bhTypeLabel').textContent = label;
+  document.getElementById('bhTypeMenu').style.display = 'none';
+  applyBhFilters();
+}
+
+function toggleBhTypeDropdown(e) {
+  e.stopPropagation();
+  var menu = document.getElementById('bhTypeMenu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+document.addEventListener('click', function() {
+  var menu = document.getElementById('bhTypeMenu');
+  if (menu) menu.style.display = 'none';
+});
+
+function applyBhFilters() {
+  var search = (document.getElementById('bhSearch').value || '').toLowerCase();
+  var type   = _bhTypeVal;
+  var from   = document.getElementById('bhDateFrom').value;
+  var to     = document.getElementById('bhDateTo').value;
+  bhFiltered = bhAllBackups.filter(function(b) {
+    if (search && b.id.toLowerCase().indexOf(search) < 0 && (b.label||'').toLowerCase().indexOf(search) < 0) return false;
+    if (type && b.label !== type) return false;
+    if (from && b.created_at < from) return false;
+    if (to   && b.created_at > to + 'T23:59:59') return false;
+    return true;
+  });
+  document.getElementById('bhFilterCount').textContent = bhFiltered.length + ' of ' + bhAllBackups.length;
+  renderBhTable(bhFiltered);
+}
+
+function clearBhFilters() {
+  document.getElementById('bhSearch').value = '';
+  setBhType('', 'All types');
+  document.getElementById('bhDateFrom').value = '';
+  document.getElementById('bhDateTo').value = '';
+  applyBhFilters();
+}
+
+function renderBhTable(backups) {
+  var el = document.getElementById('bhTableBody');
+  if (!backups.length) {
+    el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px;">No backups found.</div>';
+    return;
+  }
+  var rows = backups.map(function(b) {
+    var dt = new Date(b.created_at);
+    var isAuto = b.label === 'Auto';
+    return '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04);">' +
+      '<span style="font-size:10px;border-radius:4px;padding:2px 7px;font-weight:700;background:' + (isAuto ? 'rgba(148,163,184,.12)' : 'rgba(96,165,250,.12)') + ';color:' + (isAuto ? '#94a3b8' : '#60a5fa') + ';">' + b.label + '</span>' +
+      '<span style="flex:1;font-family:monospace;font-size:11px;color:var(--text3);">' + b.id.slice(0,12) + '…</span>' +
+      '<span style="font-size:12px;color:var(--text2);">' + dt.toLocaleString() + '</span>' +
+      '<button onclick="doRestore(\'' + b.id + '\')" style="padding:4px 10px;background:rgba(96,165,250,.12);color:#60a5fa;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-family:inherit;">Restore</button>' +
+      '<button onclick="doDelete(\'' + b.id + '\')" style="padding:4px 10px;background:rgba(250,80,80,.08);color:var(--primary);border:none;border-radius:5px;cursor:pointer;font-size:11px;font-family:inherit;">Delete</button>' +
+    '</div>';
+  });
+  el.innerHTML = rows.join('');
+}
+
+function doRestore(id) {
+  showCustomConfirm(
+    'Restore backup',
+    'Current data will be overwritten. This cannot be undone.',
+    'Restore',
+    '#60a5fa',
+    function() {
+      fetch('/api/admin/restore/' + id, {method:'POST'})
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if (d.success) showBackupMsg('Restored from ' + d.restored, '#22c55e');
+          else showBackupMsg('Error: ' + d.error, '#ef4444');
+        })
+        .catch(function(){ showBackupMsg('Connection error', '#ef4444'); });
+    }
+  );
+}
+
+function doDelete(id) {
+  showCustomConfirm(
+    'Delete backup',
+    'This backup will be permanently deleted and cannot be recovered.',
+    'Delete',
+    '#ef4444',
+    function() {
+      fetch('/api/admin/backup/' + id, {method:'DELETE'})
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if (d.success) { loadBackupFull(); showBackupMsg('Deleted.', '#4ade80'); }
+          else showBackupMsg('Error: ' + d.error, '#ef4444');
+        })
+        .catch(function(){ showBackupMsg('Connection error', '#ef4444'); });
+    }
+  );
+}
+
+function showCustomConfirm(title, message, confirmLabel, confirmColor, onConfirm) {
+  var overlay = document.getElementById('customConfirmOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'customConfirmOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:10000;display:flex;align-items:center;justify-content:center;padding:16px;';
+    overlay.innerHTML = '<div id="customConfirmBox" style="background:#1a1a2e;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:28px 28px 24px;max-width:380px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);">'
+      + '<div id="customConfirmTitle" style="font-size:16px;font-weight:700;color:#f0f0f8;margin-bottom:10px;"></div>'
+      + '<div id="customConfirmMsg" style="font-size:13px;color:#a0a0b0;line-height:1.6;margin-bottom:22px;"></div>'
+      + '<div style="display:flex;gap:10px;justify-content:flex-end;">'
+      + '<button id="customConfirmCancel" style="padding:9px 20px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text2);border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600;">Cancel</button>'
+      + '<button id="customConfirmOk" style="padding:9px 20px;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:700;"></button>'
+      + '</div></div>';
+    document.body.appendChild(overlay);
+    document.getElementById('customConfirmCancel').addEventListener('click', function() {
+      overlay.style.display = 'none';
+    });
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) overlay.style.display = 'none';
+    });
+  }
+  document.getElementById('customConfirmTitle').textContent = title;
+  document.getElementById('customConfirmMsg').textContent = message;
+  var okBtn = document.getElementById('customConfirmOk');
+  okBtn.textContent = confirmLabel;
+  okBtn.style.background = confirmColor;
+  okBtn.style.color = confirmColor === '#60a5fa' ? '#fff' : '#fff';
+  var newOk = okBtn.cloneNode(true);
+  newOk.textContent = confirmLabel;
+  newOk.style.background = confirmColor;
+  newOk.style.color = '#fff';
+  okBtn.parentNode.replaceChild(newOk, okBtn);
+  newOk.addEventListener('click', function() {
+    overlay.style.display = 'none';
+    onConfirm();
+  });
+  overlay.style.display = 'flex';
+}
+</script>
+
+    <div class="dash-section" id="healthSection" style="margin-top:0;">
+      <div class="dash-section-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          System Health
+        </span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="healthLastRefresh" style="font-size:11px;color:var(--text3);font-weight:400;"></span>
+          <button onclick="loadHealth()" id="healthRefreshBtn" class="btn btn-ghost btn-sm" style="padding:4px 10px;font-size:11px;">↻ Refresh</button>
+        </div>
+      </div>
+      <div id="healthLoading" style="text-align:center;color:var(--text3);padding:28px;font-size:13px;">Loading…</div>
+      <div id="healthContent" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;">
+          <div class="dash-stat-card" style="padding:14px 16px;">
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Uptime</div>
+            <div id="hUptime" style="font-size:16px;font-weight:700;color:#4ade80;font-family:monospace;">—</div>
+          </div>
+          <div class="dash-stat-card" style="padding:14px 16px;">
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Python</div>
+            <div id="hPython" style="font-size:16px;font-weight:700;color:#60a5fa;font-family:monospace;">—</div>
+          </div>
+          <div class="dash-stat-card" style="padding:14px 16px;">
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Active Sessions</div>
+            <div id="hSessions" style="font-size:16px;font-weight:700;color:#f0f0f8;">—</div>
+          </div>
+          <div class="dash-stat-card" style="padding:14px 16px;">
+            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">Started At</div>
+            <div id="hStarted" style="font-size:12px;font-weight:600;color:var(--text2);font-family:monospace;">—</div>
+          </div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Services</div>
+          <div id="hServices" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;"></div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Environment Variables</div>
+          <div id="hEnvVars" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Data Files</div>
+          <div id="hDataFiles" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+      </div>
+    </div>
+
+  <div class="dash-section" id="consoleSection" style="margin-top:0;">
+    <div class="dash-section-title" style="margin-bottom:10px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+      Console
+    </div>
+
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+      <div id="cLogTypeWrap" style="position:relative;">
+        <button id="cLogTypeBtn" onclick="toggleCDd('cLogTypeMenu',event)" style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text2);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+          <span id="cLogTypeBtnLabel">All logs</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div id="cLogTypeMenu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;background:#16162a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:6px;min-width:160px;z-index:600;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+          <div style="padding:4px 8px 6px;font-size:10px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.6px;">Filter by type</div>
+          <label id="clt-all" onclick="cltToggleAll(event)" style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:var(--text2);font-weight:600;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" id="clt-all-cb" checked style="width:13px;height:13px;accent-color:#60a5fa;cursor:pointer;"> All logs
+          </label>
+          <div style="height:1px;background:rgba(255,255,255,0.06);margin:4px 0;"></div>
+          <label style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#2dd4bf;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" class="clt-cb" value="startup" checked style="width:13px;height:13px;accent-color:#2dd4bf;cursor:pointer;" onchange="cltChange()"> Startup
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#94a3b8;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" class="clt-cb" value="http" checked style="width:13px;height:13px;accent-color:#94a3b8;cursor:pointer;" onchange="cltChange()"> HTTP
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#e2e8f0;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" class="clt-cb" value="info" checked style="width:13px;height:13px;accent-color:#e2e8f0;cursor:pointer;" onchange="cltChange()"> Info
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#fbbf24;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" class="clt-cb" value="warn" checked style="width:13px;height:13px;accent-color:#fbbf24;cursor:pointer;" onchange="cltChange()"> Warn
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#f87171;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" class="clt-cb" value="error" checked style="width:13px;height:13px;accent-color:#f87171;cursor:pointer;" onchange="cltChange()"> Error
+          </label>
+          <label style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:12px;color:#64748b;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+            <input type="checkbox" class="clt-cb" value="debug" checked style="width:13px;height:13px;accent-color:#64748b;cursor:pointer;" onchange="cltChange()"> Debug
+          </label>
+        </div>
+      </div>
+
+      <div id="cTimeWrap" style="position:relative;">
+        <button id="cTimeBtn" onclick="toggleCDd('cTimeMenu',event)" style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text2);font-size:12px;font-weight:600;font-family:inherit;cursor:pointer;white-space:nowrap;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span id="cTimeBtnLabel">Last hour</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div id="cTimeMenu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;background:#16162a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:6px;min-width:148px;z-index:600;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
+          <div onclick="setCTimeRange(15,'Last 15 min')" class="c-time-opt" data-val="15">Last 15 min</div>
+          <div onclick="setCTimeRange(60,'Last hour')" class="c-time-opt sel" data-val="60">Last hour</div>
+          <div onclick="setCTimeRange(360,'Last 6 hours')" class="c-time-opt" data-val="360">Last 6 hours</div>
+          <div onclick="setCTimeRange(1440,'Last 24 hours')" class="c-time-opt" data-val="1440">Last 24 hours</div>
+          <div onclick="setCTimeRange(0,'All time')" class="c-time-opt" data-val="0">All time</div>
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:160px;position:relative;">
+        <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#4a5568;pointer-events:none;" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input id="cSearch" type="text" placeholder="Search logs…" oninput="_applyConsoleFilters()" style="width:100%;padding:6px 10px 6px 30px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:12px;font-family:inherit;outline:none;box-sizing:border-box;">
+      </div>
+
+      <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text3);cursor:pointer;white-space:nowrap;flex-shrink:0;">
+        <input type="checkbox" id="consoleAutoScroll" checked style="width:13px;height:13px;accent-color:#60a5fa;cursor:pointer;">
+        Auto-scroll
+      </label>
+      <button onclick="clearConsole()" style="padding:6px 10px;background:rgba(250,80,80,0.08);border:1px solid rgba(250,80,80,0.2);border-radius:8px;color:#f87171;font-size:12px;font-family:inherit;cursor:pointer;flex-shrink:0;">Clear</button>
+    </div>
+
+    <div id="consoleBox" style="background:#0b0b18;border:1px solid rgba(255,255,255,0.07);border-radius:10px;font-family:'Fira Mono','Cascadia Code','Consolas',monospace;font-size:12.5px;line-height:1.65;overflow-y:auto;overflow-x:auto;max-height:520px;">
+      <div id="consoleLines" style="padding:6px 0;min-width:max-content;"></div>
+    </div>
+    <div style="margin-top:6px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text3);">
+      <span id="consoleCount"></span>
+      <span id="consoleLastUpdate"></span>
+    </div>
+  </div>
+
+  <style>
+  .c-time-opt{padding:7px 12px;font-size:12px;color:var(--text2);cursor:pointer;border-radius:6px;font-family:inherit;}
+  .c-time-opt:hover{background:rgba(255,255,255,0.06);}
+  .c-time-opt.sel{color:#60a5fa;font-weight:700;}
+  </style>
+
+  <script>
+  var _consoleLogs = [];
+  var _consoleSince = '';
+  var _cTimeMinutes = 60;
+  var _cAllMenuOpen = '';
+
+  function toggleCDd(id, e) {
+    e.stopPropagation();
+    var menu = document.getElementById(id);
+    var isOpen = menu.style.display !== 'none';
+    document.querySelectorAll('#cLogTypeMenu,#cTimeMenu').forEach(function(m){ m.style.display='none'; });
+    if (!isOpen) menu.style.display = 'block';
+  }
+  document.getElementById('cLogTypeMenu').addEventListener('click', function(e){ e.stopPropagation(); });
+  document.getElementById('cTimeMenu').addEventListener('click', function(e){ e.stopPropagation(); });
+  document.addEventListener('click', function() {
+    document.querySelectorAll('#cLogTypeMenu,#cTimeMenu').forEach(function(m){ m.style.display='none'; });
+  });
+
+  function cltToggleAll(e) {
+    var allCb = document.getElementById('clt-all-cb');
+    setTimeout(function() {
+      document.querySelectorAll('.clt-cb').forEach(function(cb){ cb.checked = allCb.checked; });
+      _updateCltLabel();
+      _applyConsoleFilters();
+    }, 0);
+  }
+
+  function cltChange() {
+    var cbs = document.querySelectorAll('.clt-cb');
+    var allChecked = Array.from(cbs).every(function(cb){ return cb.checked; });
+    document.getElementById('clt-all-cb').checked = allChecked;
+    _updateCltLabel();
+    _applyConsoleFilters();
+  }
+
+  function _updateCltLabel() {
+    var checked = Array.from(document.querySelectorAll('.clt-cb:checked')).map(function(cb){ return cb.value; });
+    var total = document.querySelectorAll('.clt-cb').length;
+    var lbl = document.getElementById('cLogTypeBtnLabel');
+    if (checked.length === 0) lbl.textContent = 'No logs';
+    else if (checked.length === total) lbl.textContent = 'All logs';
+    else lbl.textContent = checked.map(function(v){ return v[0].toUpperCase()+v.slice(1); }).join(', ');
+  }
+
+  function setCTimeRange(mins, label) {
+    _cTimeMinutes = mins;
+    document.getElementById('cTimeBtnLabel').textContent = label;
+    document.querySelectorAll('.c-time-opt').forEach(function(el){
+      el.classList.toggle('sel', parseInt(el.getAttribute('data-val')) === mins);
+    });
+    document.getElementById('cTimeMenu').style.display = 'none';
+    _applyConsoleFilters();
+  }
+
+  function _escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function _fmtTs(isoStr) {
+    if (!isoStr) return '';
+    var d = new Date(isoStr);
+    var h = d.getHours(), m = d.getMinutes(), s = d.getSeconds();
+    return (h<10?'0'+h:h)+':'+(m<10?'0'+m:m)+':'+(s<10?'0'+s:s);
+  }
+
+  function _highlightLog(escaped, lv) {
+    if (lv === 'startup') return escaped;
+    if (lv === 'http') {
+      var hm = escaped.match(/^(GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS) (\S+) (\d{3}) (\d+ms)$/);
+      if (hm) {
+        var sc = parseInt(hm[3]);
+        var sc_col = sc>=500?'#f87171':sc>=400?'#fbbf24':sc>=300?'#38bdf8':'#4ade80';
+        return '<span style="color:#4ade80;font-weight:700;">'+hm[1]+'</span>'
+          +' <span style="color:#93c5fd;">'+hm[2]+'</span>'
+          +' <span style="color:'+sc_col+';font-weight:700;">'+hm[3]+'</span>'
+          +' <span style="color:#818cf8;">'+hm[4]+'</span>';
+      }
+      return escaped;
+    }
+    var _sp = [];
+    function _ph(color, bold, txt) {
+      var i = _sp.length;
+      _sp.push('<span style="color:'+color+(bold?';font-weight:700':'')+'">' + txt + '</span>');
+      return '\x00' + i + '\x00';
+    }
+    var s = escaped;
+    s = s.replace(/\b(ERROR|CRITICAL|FATAL)\b/g,  function(_,w){ return _ph('#f87171', true, w); });
+    s = s.replace(/\b(WARNING|WARN)\b/g,           function(_,w){ return _ph('#fbbf24', true, w); });
+    s = s.replace(/\b(INFO)\b/g,                   function(_,w){ return _ph('#60a5fa', false, w); });
+    s = s.replace(/\b(DEBUG)\b/g,                  function(_,w){ return _ph('#64748b', false, w); });
+    s = s.replace(/(\[[^\]]*\])/g,                 function(_,w){ return _ph('#64748b', false, w); });
+    s = s.replace(/(&quot;[^"]*&quot;)/g,          function(_,w){ return _ph('#86efac', false, w); });
+    s = s.replace(/\b(\d{3})\b/g, function(_,code) {
+      var c = parseInt(code);
+      return _ph(c>=500?'#f87171':c>=400?'#fbbf24':c>=300?'#38bdf8':c>=200?'#4ade80':'#e2e8f0', true, code);
+    });
+    s = s.replace(/\b(\d+\.\d+\.\d+\.\d+)\b/g,   function(_,ip){ return _ph('#c4b5fd', false, ip); });
+    return s.replace(/\x00(\d+)\x00/g, function(_,i){ return _sp[parseInt(i)]; });
+  }
+
+  var _LV_COLOR = {
+    startup: '#2dd4bf',
+    http:    '#94a3b8',
+    info:    '#e2e8f0',
+    warn:    '#fbbf24',
+    error:   '#f87171',
+    debug:   '#475569'
+  };
+  var _LV_BG = {
+    error: 'rgba(248,113,113,0.04)',
+    warn:  'rgba(251,191,36,0.03)'
+  };
+
+  function _renderLine(log) {
+    var lv = log.level || 'info';
+    var color = _LV_COLOR[lv] || '#e2e8f0';
+    var bg = _LV_BG[lv] || 'transparent';
+    var ts = _fmtTs(log.t);
+    var msg = log.msg || '';
+    var isArrow = msg.startsWith('==>') || msg.startsWith('[STARTUP]');
+    if (isArrow) color = '#2dd4bf';
+    var highlighted = _highlightLog(_escHtml(msg), lv);
+    return '<div style="display:flex;align-items:baseline;padding:1px 16px;background:'+bg+';min-height:22px;">'
+      + '<span style="color:#374151;font-size:11px;white-space:nowrap;flex-shrink:0;margin-right:14px;padding-top:1px;user-select:none;">'+_escHtml(ts)+'</span>'
+      + '<span style="color:'+color+';white-space:nowrap;">'+highlighted+'</span>'
+      + '</div>';
+  }
+
+  function _applyConsoleFilters() {
+    var allowed = Array.from(document.querySelectorAll('.clt-cb:checked')).map(function(cb){ return cb.value; });
+    var search = (document.getElementById('cSearch').value || '').toLowerCase();
+    var cutoff = null;
+    if (_cTimeMinutes > 0) { cutoff = new Date(Date.now() - _cTimeMinutes * 60000).toISOString(); }
+    var lines = _consoleLogs.filter(function(l){
+      if (allowed.indexOf(l.level || 'info') < 0) return false;
+      if (cutoff && l.t < cutoff) return false;
+      if (search && (l.msg || '').toLowerCase().indexOf(search) < 0) return false;
+      return true;
+    });
+    var el = document.getElementById('consoleLines');
+    if (!el) return;
+    if (lines.length) {
+      el.innerHTML = lines.map(_renderLine).join('');
+    } else {
+      el.innerHTML = '<div style="padding:28px 18px;color:#374151;font-size:12px;">No logs match the current filters.</div>';
+    }
+    var cnt = document.getElementById('consoleCount');
+    if (cnt) cnt.textContent = lines.length + ' / ' + _consoleLogs.length + ' entries';
+    var box = document.getElementById('consoleBox');
+    var autoScroll = document.getElementById('consoleAutoScroll');
+    if (box && autoScroll && autoScroll.checked) box.scrollTop = box.scrollHeight;
+  }
+
+  function clearConsole() {
+    _consoleLogs = [];
+    _consoleSince = new Date().toISOString().slice(0, 23);
+    _applyConsoleFilters();
+  }
+
+  function _fetchLogs() {
+    var url = '/api/admin/logs' + (_consoleSince ? '?since=' + encodeURIComponent(_consoleSince) : '');
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (!d.success) return;
+        var newLogs = d.logs || [];
+        if (!_consoleSince) {
+          _consoleLogs = newLogs;
+        } else if (newLogs.length) {
+          _consoleLogs = _consoleLogs.concat(newLogs);
+          if (_consoleLogs.length > 1000) _consoleLogs = _consoleLogs.slice(-1000);
+        }
+        if (newLogs.length) _consoleSince = newLogs[newLogs.length-1].t;
+        _applyConsoleFilters();
+        var upd = document.getElementById('consoleLastUpdate');
+        if (upd) upd.textContent = 'Live · updated ' + new Date().toLocaleTimeString();
+      })
+      .catch(function(){});
+  }
+
+  _fetchLogs();
+  setInterval(_fetchLogs, 2000);
+  </script>
+
+  <script>
+  var _serviceLabels = {email_brevo:'Email (Brevo)',email_smtp:'Email (SMTP)',google_oauth:'Google OAuth',discord_oauth:'Discord OAuth',discord_bot:'Discord Bot',supabase_backup:'Supabase Backup'};
+  function loadHealth() {
+    var btn = document.getElementById('healthRefreshBtn');
+    if (btn) btn.disabled = true;
+    fetch('/api/admin/health')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if (!d.success) { if(btn) btn.disabled=false; return; }
+        document.getElementById('healthLoading').style.display='none';
+        document.getElementById('healthContent').style.display='block';
+        document.getElementById('hUptime').textContent = d.uptime||'—';
+        document.getElementById('hPython').textContent = d.python_version||'—';
+        document.getElementById('hSessions').textContent = d.stats ? d.stats.active_sessions : '—';
+        document.getElementById('hStarted').textContent = d.started_at ? new Date(d.started_at).toLocaleString() : '—';
+        document.getElementById('healthLastRefresh').textContent = 'Updated '+new Date().toLocaleTimeString();
+        var svc=document.getElementById('hServices'); svc.innerHTML='';
+        Object.keys(d.services||{}).forEach(function(k){
+          var ok=d.services[k], label=_serviceLabels[k]||k;
+          svc.innerHTML+='<div style="display:flex;align-items:center;gap:8px;background:'+(ok?'rgba(74,222,128,0.06)':'rgba(250,80,80,0.06)')+';border:1px solid '+(ok?'rgba(74,222,128,0.2)':'rgba(250,80,80,0.15)')+';border-radius:8px;padding:9px 12px;">'+'<div style="width:7px;height:7px;border-radius:50%;background:'+(ok?'#4ade80':'#fa5050')+';flex-shrink:0;"></div>'+'<span style="font-size:12px;font-weight:600;color:'+(ok?'#4ade80':'var(--text2)')+';">'+label+'</span>'+'<span style="margin-left:auto;font-size:10px;font-weight:700;color:'+(ok?'#4ade80':'#fa5050')+';"> '+(ok?'OK':'NOT SET')+'</span></div>';
+        });
+        var env=document.getElementById('hEnvVars'); env.innerHTML='';
+        Object.keys(d.env_vars||{}).forEach(function(k){
+          var ok=d.env_vars[k];
+          env.innerHTML+='<span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;font-family:monospace;border-radius:6px;padding:4px 9px;background:'+(ok?'rgba(74,222,128,0.08)':'rgba(250,80,80,0.08)')+';border:1px solid '+(ok?'rgba(74,222,128,0.2)':'rgba(250,80,80,0.15)')+';color:'+(ok?'#4ade80':'#fa5050')+';"><span style="width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;"></span>'+k+'</span>';
+        });
+        var df=document.getElementById('hDataFiles'); df.innerHTML='';
+        (d.data_files||[]).forEach(function(f){
+          df.innerHTML+='<div style="display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:8px;">'+'<div style="width:7px;height:7px;border-radius:50%;background:'+(f.ok?'#4ade80':'#fa5050')+';flex-shrink:0;"></div>'+'<span style="font-family:monospace;font-size:12px;color:var(--text);flex:1;">'+f.name+'</span>'+(f.records!=null?'<span style="font-size:11px;color:var(--text3);">'+f.records+'</span>':'')+'<span style="font-size:11px;font-weight:600;color:var(--text2);font-family:monospace;">'+f.size+'</span></div>';
+        });
+        if(btn) btn.disabled=false;
+      })
+      .catch(function(){if(btn) btn.disabled=false;});
+  }
+  loadHealth();
+  setInterval(loadHealth, 30000);
+  </script>
+{% endblock %}
