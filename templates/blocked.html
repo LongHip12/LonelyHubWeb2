@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Blocked - Lonely Hub</title>
+<link rel="stylesheet" href="/static/style.css?v=6" />
+<link rel="stylesheet" href="/static/extras.css?v=6" />
+</head>
+<body>
+<canvas id="snow"></canvas>
+<div class="bg-gradient"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
+
+<main class="blocked-wrap">
+  <div class="blocked-icon">⛔</div>
+  <h1 class="blocked-title">You are <span class="grad-text">blocked</span> for bypassing</h1>
+  <p class="blocked-msg">Our system detected a bypass attempt. You have been temporarily blocked for 2 hours. If you believe this is a mistake, please join our Discord server for help.</p>
+  <a href="https://dsc.gg/lonelyhub" target="_blank" class="discord-btn">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a14.61 14.61 0 0 0-.66 1.357 18.4 18.4 0 0 0-5.797 0A14.6 14.6 0 0 0 9.44 3a19.74 19.74 0 0 0-3.76 1.369C2.07 9.79 1.18 15.066 1.62 20.27a19.93 19.93 0 0 0 6.073 3.07 14.6 14.6 0 0 0 1.299-2.115 12.93 12.93 0 0 1-2.045-.978c.171-.125.339-.255.5-.388 3.927 1.82 8.18 1.82 12.064 0 .163.133.33.263.501.388-.652.388-1.337.717-2.046.98a14.43 14.43 0 0 0 1.299 2.114 19.94 19.94 0 0 0 6.073-3.07c.5-6.06-.847-11.292-3.421-15.902Z"/></svg>
+    No Bypass? Join Discord For Help
+  </a>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>© Lonely Hub 2026</span>
+    <div class="socials">
+      <a href="https://dsc.gg/lonelyhub" target="_blank">Discord</a>
+    </div>
+  </div>
+</footer>
+
+<div id="music-player" class="music-player glass-strong">
+  <div id="drag-handle" class="drag-handle" title="Drag to move">
+    <svg class="drag-icon" width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><circle cx="4" cy="4" r="1.5"/><circle cx="4" cy="8" r="1.5"/><circle cx="4" cy="12" r="1.5"/><circle cx="9" cy="4" r="1.5"/><circle cx="9" cy="8" r="1.5"/><circle cx="9" cy="12" r="1.5"/></svg>
+    <svg class="drag-note" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+    <span class="drag-label">Lonely Hub Music</span>
+    <button class="mp-minimize-btn" id="mp-minimize" onclick="toggleMinimize()" title="Minimize">
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+  <div id="mp-body" class="mp-body">
+    <audio id="audio"></audio>
+    <div class="mp-row">
+      <div class="mp-art" id="mp-art">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      </div>
+      <div class="mp-info">
+        <div class="mp-title" id="mp-title">Add music to /Musics</div>
+        <div class="mp-artist" id="mp-artist">Lonely Hub</div>
+      </div>
+      <button class="mp-icon-btn" onclick="toggleMute()" id="mute-btn" title="Mute">
+        <svg id="icon-vol" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 010 7.07"/><path d="M19.07 4.93a10 10 0 010 14.14"/></svg>
+      </button>
+    </div>
+    <div class="mp-prog-row">
+      <span class="mp-time" id="t-cur">0:00</span>
+      <div class="mp-prog-wrap">
+        <div class="mp-prog-bg"></div>
+        <div class="mp-prog-fill" id="prog-fill" style="width:0%"></div>
+        <input class="mp-prog-input" type="range" id="prog-input" min="0" max="100" value="0" step="0.1" oninput="onSeek(this)" />
+      </div>
+      <span class="mp-time" id="t-tot">0:00</span>
+    </div>
+    <div class="mp-ctrl-row">
+      <div class="mp-ctrl-btns">
+        <button class="mp-icon-btn" onclick="prevTrack()" title="Previous">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="5" width="2.5" height="14" rx="1.2"/><path d="M7.5 12L19 5v14L7.5 12z"/></svg>
+        </button>
+        <button class="mp-play-btn" id="play-btn" onclick="togglePlay()" title="Play/Pause">
+          <svg id="play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="mp-icon-btn" onclick="nextTrack()" title="Next">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="17.5" y="5" width="2.5" height="14" rx="1.2"/><path d="M16.5 12L5 5v14l11.5-7z"/></svg>
+        </button>
+      </div>
+      <div class="mp-vol-row">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="opacity:.5;flex-shrink:0"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>
+        <div class="mp-vol-wrap">
+          <div class="mp-vol-bg"></div>
+          <div class="mp-vol-fill" id="vol-fill" style="width:70%"></div>
+          <input class="mp-prog-input" type="range" id="vol-input" min="0" max="1" step="0.01" value="0.7" oninput="onVolume(this)" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="/static/script.js?v=5"></script>
+<script src="/static/music.js?v=5"></script>
+<script src="/static/extras.js?v=5"></script>
+
+  </body>
+</html>
