@@ -1,0 +1,1406 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ profile.display_name }}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="/static/css/dashboard.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="dashboard-page">
+<div class="container">
+
+  <div class="dashboard-header">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <img src="{{ profile.avatar if profile.avatar else 'https://i.imgur.com/BCzwCla.png' }}"
+           alt="{{ profile.display_name }}"
+           style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid rgba(250,80,80,0.3);"
+           onerror="this.onerror=null;this.src='https://i.imgur.com/BCzwCla.png'">
+      <div>
+        <div class="dashboard-title">{{ profile.display_name }}</div>
+        <div class="dashboard-subtitle">@{{ profile.username }} · Personal Dashboard</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="/users/{{ profile.username }}" class="btn btn-ghost btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Profile
+      </a>
+      <a href="/users/{{ profile.id }}/manager-upload" class="btn btn-secondary btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+        Manage Mods
+      </a>
+    </div>
+  </div>
+
+  <div class="dash-stats-grid">
+    <div class="dash-stat-card views">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_views }}">0</div>
+      <div class="dash-stat-label">Total Views</div>
+    </div>
+    <div class="dash-stat-card downloads">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_downloads }}">0</div>
+      <div class="dash-stat-label">Total Downloads</div>
+    </div>
+    <div class="dash-stat-card views-today">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ views_today }}">0</div>
+      <div class="dash-stat-label">Views Today</div>
+    </div>
+    <div class="dash-stat-card downloads-today">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ downloads_today }}">0</div>
+      <div class="dash-stat-label">Downloads Today</div>
+    </div>
+    <div class="dash-stat-card mods">
+      <div class="dash-stat-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ total_mods }}">0</div>
+      <div class="dash-stat-label">Total Mods</div>
+    </div>
+    <div class="dash-stat-card" style="--accent:#ec4899;">
+      <div class="dash-stat-card-accent-bar" style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ec4899,#f43f5e);border-radius:14px 14px 0 0;"></div>
+      <div class="dash-stat-icon" style="background:rgba(236,72,153,0.12);color:#ec4899;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ followers_count }}">0</div>
+      <div class="dash-stat-label">Followers</div>
+    </div>
+    <div class="dash-stat-card" style="--accent:#8b5cf6;">
+      <div class="dash-stat-card-accent-bar" style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#8b5cf6,#6366f1);border-radius:14px 14px 0 0;"></div>
+      <div class="dash-stat-icon" style="background:rgba(139,92,246,0.12);color:#8b5cf6;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+      </div>
+      <div class="dash-stat-value" data-count="{{ following_count }}">0</div>
+      <div class="dash-stat-label">Following</div>
+    </div>
+  </div>
+
+  <div class="dash-section">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+      Activity — Last 14 days
+    </div>
+    <div class="chart-wrap">
+      <canvas id="activityChart"></canvas>
+    </div>
+  </div>
+
+  <div class="dash-grid-2">
+    <div class="dash-section" style="margin-bottom:0;">
+      <div class="dash-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        Your Top Mods
+      </div>
+      {% if top_mods %}
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+      <table class="dash-table" style="min-width:320px;">
+        <thead><tr><th>#</th><th>Mod</th><th>Views</th><th>DL</th></tr></thead>
+        <tbody>
+        {% for m in top_mods %}
+        <tr>
+          <td><span class="dash-rank {% if loop.index == 1 %}top1{% elif loop.index == 2 %}top2{% elif loop.index == 3 %}top3{% endif %}">{{ loop.index }}</span></td>
+          <td><a href="/mods/{{ m.id }}/info" class="mod-name" style="color:var(--text);text-decoration:none;">{{ m.name }}</a></td>
+          <td><span class="num">{{ m.views }}</span></td>
+          <td><span class="num" style="color:var(--green);">{{ m.downloads }}</span></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      {% else %}
+      <div style="text-align:center;color:var(--text3);padding:32px;font-size:14px;">
+        No mods yet. <a href="/upload" style="color:var(--primary);">Upload now</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="dash-section" style="margin-bottom:0;">
+      <div class="dash-section-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Downloads — Last 14 days
+      </div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="dlChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  {% if following_profiles %}
+  <div class="dash-section" style="margin-top:24px;">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+      Following ({{ following_count }})
+    </div>
+    <div class="following-grid">
+      {% for u in following_profiles %}
+      <a href="/users/{{ u.username }}" class="following-card">
+        <img src="{{ u.avatar if u.avatar else 'https://i.imgur.com/BCzwCla.png' }}"
+             alt="{{ u.display_name }}" class="following-avatar">
+        <div class="following-info">
+          <div class="following-name">{{ u.display_name }}</div>
+          <div class="following-username">@{{ u.username }}</div>
+        </div>
+        <div class="following-followers-badge">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          {{ u.followers | length if u.followers else 0 }}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="dash-section" style="margin-top:24px;">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+      Linked Accounts
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:var(--text);">Google</div>
+              {% if profile.google_id %}
+              <div style="font-size:12px;color:var(--green);">Connected</div>
+              {% else %}
+              <div style="font-size:12px;color:var(--text3);">Not connected</div>
+              {% endif %}
+            </div>
+          </div>
+          {% if profile.google_id %}
+          <button onclick="unlinkGooglePanel()" id="google-disconnect-btn" class="btn btn-ghost btn-sm" style="color:var(--red,#fa5050);border-color:rgba(250,80,80,0.3);">Disconnect</button>
+          {% else %}
+          <a href="/auth/google" class="btn btn-ghost btn-sm">Connect</a>
+          {% endif %}
+        </div>
+        {% if profile.google_id %}
+        <div id="google-otp-panel" style="display:none;border-top:1px solid var(--border2);padding:14px 18px;">
+          {% if profile.email and profile.email_verified %}
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">A code will be sent to <strong style="color:var(--text);">{{ profile.email }}</strong> to confirm.</div>
+          <button onclick="googleOtpSend()" id="google-otp-send-btn" class="btn btn-primary btn-sm" style="margin-bottom:10px;">Send Code</button>
+          <div id="google-otp-err" style="font-size:12px;color:#fa5050;display:none;margin-bottom:8px;"></div>
+          <div id="google-otp-boxes-panel" style="display:none;">
+            <div class="otp-boxes" id="google-otp-boxes">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+              <button onclick="googleOtpSubmit()" id="google-otp-verify-btn" class="btn btn-sm" style="background:rgba(250,80,80,0.12);border:1px solid rgba(250,80,80,0.35);border-radius:8px;color:#fa5050;padding:7px 16px;font-size:13px;cursor:pointer;">Disconnect Google</button>
+              <button onclick="googleOtpResend()" id="google-otp-resend-btn" class="btn btn-ghost btn-sm" disabled style="color:var(--text3);">Resend (<span id="google-otp-countdown">60</span>s)</button>
+            </div>
+            <div id="google-otp-verify-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+          </div>
+          {% else %}
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Are you sure you want to disconnect Google?</div>
+          <div style="display:flex;gap:10px;">
+            <button onclick="unlinkGoogleDirect()" class="btn btn-sm" style="background:rgba(250,80,80,0.12);border:1px solid rgba(250,80,80,0.35);border-radius:8px;color:#fa5050;padding:7px 16px;font-size:13px;cursor:pointer;">Yes, Disconnect</button>
+            <button onclick="document.getElementById('google-otp-panel').style.display='none';document.getElementById('google-disconnect-btn').textContent='Disconnect';" class="btn btn-ghost btn-sm">Cancel</button>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(250,80,80,0.1);border:1px solid rgba(250,80,80,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fa5050" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:var(--text);">Email</div>
+              {% if profile.email %}
+              <div style="font-size:12px;color:{% if profile.email_verified %}var(--green){% else %}#f59e0b{% endif %};">
+                {{ profile.email }}{% if not profile.email_verified %} · Unverified{% endif %}
+              </div>
+              {% else %}
+              <div style="font-size:12px;color:var(--text3);">No email linked</div>
+              {% endif %}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            {% if profile.email %}
+              {% if profile.email_verified %}
+              <span style="display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#4ade80;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);padding:4px 10px;border-radius:6px;">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Verified
+              </span>
+              {% else %}
+              <button onclick="emailVerifyPanel()" id="email-verify-btn" class="btn btn-ghost btn-sm" style="color:#f59e0b;border-color:rgba(245,158,11,0.35);">Verify Email</button>
+              {% endif %}
+              <button onclick="changeEmailPanel()" id="email-change-btn" class="btn btn-ghost btn-sm" style="font-size:11px;">Change</button>
+              <button onclick="removeEmailPanel()" id="email-remove-btn" class="btn btn-ghost btn-sm" style="color:var(--red,#fa5050);border-color:rgba(250,80,80,0.3);font-size:11px;">Remove</button>
+            {% else %}
+            <button onclick="emailAddPanel()" id="email-add-btn" class="btn btn-ghost btn-sm">Add Email</button>
+            {% endif %}
+          </div>
+        </div>
+
+        <div id="email-add-panel" style="display:none;border-top:1px solid var(--border2);padding:16px 18px;">
+          <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">Enter your email address. We'll send a verification code.</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+            <input id="add-email-input" type="email" placeholder="your@email.com"
+              style="flex:1;min-width:220px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;">
+            <button onclick="submitAddEmail()" id="add-email-btn" class="btn btn-primary btn-sm" style="white-space:nowrap;">Send Code</button>
+          </div>
+          <div id="add-email-err" style="font-size:12px;color:#fa5050;display:none;margin-bottom:10px;"></div>
+          <div id="email-otp-panel" style="display:none;">
+            <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">Enter the 6-digit code sent to your email.</div>
+            <div class="otp-boxes" id="email-otp-boxes">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+              <button onclick="submitVerifyEmail()" id="verify-email-btn" class="btn btn-primary btn-sm">Verify</button>
+              <button onclick="resendEmailOtp('verify_email')" id="email-resend-btn" class="btn btn-ghost btn-sm" disabled style="color:var(--text3);">
+                Resend (<span id="email-countdown">60</span>s)
+              </button>
+            </div>
+            <div id="verify-email-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <div id="email-change-panel" style="display:none;border-top:1px solid var(--border2);padding:16px 18px;">
+          {% if profile.email and profile.email_verified %}
+          <div id="ce-step1">
+            <div style="font-size:13px;color:var(--text2,var(--text));font-weight:500;margin-bottom:4px;">Step 1 — Verify your current email</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">A code will be sent to <strong style="color:var(--text);">{{ profile.email }}</strong>.</div>
+            <button onclick="ceSendCurrentOtp()" id="ce-step1-send-btn" class="btn btn-primary btn-sm" style="margin-bottom:10px;">Send Code</button>
+            <div id="ce-step1-err" style="font-size:12px;color:#fa5050;display:none;margin-bottom:8px;"></div>
+            <div id="ce-step1-otp-panel" style="display:none;">
+              <div class="otp-boxes" id="ce-step1-otp-boxes">
+                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+                <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+                <button onclick="ceSubmitCurrentOtp()" id="ce-step1-verify-btn" class="btn btn-primary btn-sm">Verify &amp; Continue</button>
+                <button onclick="ceResendCurrentOtp()" id="ce-step1-resend-btn" class="btn btn-ghost btn-sm" disabled style="color:var(--text3);">Resend (<span id="ce-step1-countdown">60</span>s)</button>
+              </div>
+              <div id="ce-step1-verify-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+            </div>
+          </div>
+          <div id="ce-step2" style="display:none;">
+          {% else %}
+          <div id="ce-step2">
+          {% endif %}
+            <div style="font-size:13px;color:var(--text2,var(--text));font-weight:500;margin-bottom:4px;">{% if profile.email and profile.email_verified %}Step 2 — {% endif %}Enter your new email</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">We'll send a verification code to your new address.</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+              <input id="ce-new-email-input" type="email" placeholder="new@email.com"
+                style="flex:1;min-width:200px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;">
+              <button onclick="ceSendNewOtp()" id="ce-step2-send-btn" class="btn btn-primary btn-sm" style="white-space:nowrap;">Send Code</button>
+            </div>
+            <div id="ce-step2-err" style="font-size:12px;color:#fa5050;display:none;margin-bottom:8px;"></div>
+          </div>
+          <div id="ce-step3" style="display:none;">
+            <div style="font-size:13px;color:var(--text2,var(--text));font-weight:500;margin-bottom:4px;">{% if profile.email and profile.email_verified %}Step 3 — {% endif %}Confirm new email</div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">Enter the 6-digit code sent to your new email.</div>
+            <div class="otp-boxes" id="ce-step3-otp-boxes">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+              <button onclick="ceConfirmChange()" id="ce-step3-verify-btn" class="btn btn-primary btn-sm">Confirm Change</button>
+              <button onclick="ceResendNewOtp()" id="ce-step3-resend-btn" class="btn btn-ghost btn-sm" disabled style="color:var(--text3);">Resend (<span id="ce-step3-countdown">60</span>s)</button>
+            </div>
+            <div id="ce-step3-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <div id="remove-email-panel" style="display:none;border-top:1px solid var(--border2);padding:16px 18px;">
+          <div style="font-size:13px;color:var(--text2,var(--text));font-weight:500;margin-bottom:4px;">Remove linked email</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">A code will be sent to <strong style="color:var(--text);">{{ profile.email }}</strong> to confirm.</div>
+          <button onclick="reSendOtp()" id="re-send-btn" class="btn btn-primary btn-sm" style="margin-bottom:10px;">Send Code</button>
+          <div id="re-err" style="font-size:12px;color:#fa5050;display:none;margin-bottom:8px;"></div>
+          <div id="re-otp-panel" style="display:none;">
+            <div class="otp-boxes" id="re-otp-boxes">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+              <button onclick="reSubmitOtp()" id="re-verify-btn" class="btn btn-sm" style="background:rgba(250,80,80,0.12);border:1px solid rgba(250,80,80,0.35);border-radius:8px;color:#fa5050;padding:7px 16px;font-size:13px;cursor:pointer;">Remove Email</button>
+              <button onclick="reResendOtp()" id="re-resend-btn" class="btn btn-ghost btn-sm" disabled style="color:var(--text3);">Resend (<span id="re-countdown">60</span>s)</button>
+            </div>
+            <div id="re-verify-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        {% if profile.email and not profile.email_verified %}
+        <div id="email-verify-panel" style="display:none;border-top:1px solid var(--border2);padding:16px 18px;">
+          <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">We'll send a 6-digit code to <strong style="color:var(--text);">{{ profile.email }}</strong>.</div>
+          <button onclick="sendVerifyOtp()" id="send-verify-otp-btn" class="btn btn-primary btn-sm" style="margin-bottom:14px;">Send Code</button>
+          <div id="ev-otp-panel" style="display:none;">
+            <div class="otp-boxes" id="ev-otp-boxes">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+              <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap;">
+              <button onclick="submitEVOtp()" id="ev-verify-btn" class="btn btn-primary btn-sm">Verify</button>
+              <button onclick="resendEmailOtp('verify_email', true)" id="ev-resend-btn" class="btn btn-ghost btn-sm" disabled style="color:var(--text3);">
+                Resend (<span id="ev-countdown">60</span>s)
+              </button>
+            </div>
+            <div id="ev-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:36px;height:36px;border-radius:8px;background:rgba(88,101,242,0.12);border:1px solid rgba(88,101,242,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#5865F2"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            </div>
+            <div>
+              <div style="font-weight:600;font-size:14px;color:var(--text);">Discord</div>
+              {% if profile.discord_id %}
+              <div style="font-size:12px;color:var(--green);">Connected as @{{ profile.discord_username or 'Discord User' }}</div>
+              {% else %}
+              <div style="font-size:12px;color:var(--text3);">Not connected</div>
+              {% endif %}
+            </div>
+          </div>
+          {% if profile.discord_id %}
+          <button onclick="unlinkDiscord()" class="btn btn-ghost btn-sm" style="color:var(--red,#fa5050);border-color:rgba(250,80,80,0.3);">Disconnect</button>
+          {% else %}
+          <a href="/auth/discord?action=link" class="btn btn-ghost btn-sm" style="color:#5865F2;border-color:rgba(88,101,242,0.35);">Connect</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section" style="margin-top:24px;">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+      {% if profile.password %}Change Password{% else %}Set Password{% endif %}
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:20px;">
+      <div id="cpw-fields" style="display:flex;flex-direction:column;gap:12px;max-width:420px;">
+        {% if profile.password %}
+        <div>
+          <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:500;">Current Password</label>
+          <input id="cpw-current" type="password" placeholder="••••••••"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;">
+        </div>
+        {% endif %}
+        <div>
+          <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:500;">New Password</label>
+          <input id="cpw-new" type="password" placeholder="At least 6 characters"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;">
+        </div>
+        <div>
+          <label style="display:block;font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:500;">Confirm New Password</label>
+          <input id="cpw-confirm" type="password" placeholder="Repeat new password"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;box-sizing:border-box;">
+        </div>
+        <div id="cpw-err" style="font-size:12px;color:#fa5050;display:none;"></div>
+        <div>
+          <button onclick="startChangePassword()" id="cpw-btn" class="btn btn-primary btn-sm">
+            {% if profile.password %}Change Password{% else %}Set Password{% endif %}
+          </button>
+        </div>
+      </div>
+      <div id="cpw-otp-section" style="display:none;max-width:420px;margin-top:4px;">
+        {% if profile.email_verified %}
+        <div style="font-size:13px;color:var(--text3);margin-bottom:14px;">
+          A verification code was sent to <strong style="color:var(--text);">{{ profile.email }}</strong>
+        </div>
+        <div class="otp-boxes" id="cpw-otp-boxes">
+          <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input class="otp-box" maxlength="1" inputmode="numeric" autocomplete="off">
+        </div>
+        {% endif %}
+        <div id="cpw-otp-err" style="font-size:12px;color:#fa5050;display:none;margin-top:8px;"></div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;">
+          <button onclick="confirmChangePassword()" id="cpw-submit-btn" class="btn btn-primary btn-sm">Confirm</button>
+          {% if profile.email_verified %}
+          <button onclick="resendCpwOtp()" id="cpw-resend-btn" class="btn btn-ghost btn-sm" disabled style="font-size:12px;">
+            Resend (<span id="cpw-countdown">60</span>s)
+          </button>
+          {% endif %}
+          <button onclick="cancelChangePassword()" class="btn btn-ghost btn-sm" style="font-size:12px;">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-section" style="margin-top:24px;">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+      API Token
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:18px 20px;">
+      <div style="font-size:13px;color:var(--text3);margin-bottom:12px;">Use this token to access the <a href="/api/docs" style="color:var(--primary);">Lonely Hub API</a>. Keep it secret — treat it like a password.</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:200px;position:relative;">
+          <input id="api-token-field" type="password" readonly value="" placeholder="No token yet — generate one below"
+            style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 44px 10px 14px;font-size:13px;font-family:monospace;color:var(--text);outline:none;box-sizing:border-box;">
+          <button onclick="_toggleApiTokenVisibility()" title="Show/hide"
+            style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center;">
+            <svg id="api-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
+        <button title="Copy API token to clipboard" onclick="_copyApiToken()" class="btn btn-ghost btn-sm" style="white-space:nowrap;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copy
+        </button>
+        <button title="Generate or regenerate your API token" id="api-gen-btn" onclick="_generateApiToken()" class="btn btn-primary btn-sm" style="white-space:nowrap;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          <span id="api-gen-label">Generate Token</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  {% if bookmarked_mods %}
+  <div class="dash-section" style="margin-top:{% if following_profiles %}0{% else %}24px{% endif %};">
+    <div class="dash-section-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+      Saved Mods ({{ bookmarked_mods | length }})
+    </div>
+    <div class="bookmarked-mods-grid">
+      {% for m in bookmarked_mods %}
+      <a href="/mods/{{ m.id }}/info" class="bookmarked-mod-card">
+        <div class="bookmarked-mod-thumb">
+          {% if m.banner %}
+          <img src="{{ m.banner }}" alt="{{ m.name }}">
+          {% else %}
+          <div class="bookmarked-mod-thumb-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          </div>
+          {% endif %}
+        </div>
+        <div class="bookmarked-mod-info">
+          <div class="bookmarked-mod-name">{{ m.name }}</div>
+          <div class="bookmarked-mod-meta">
+            <span>by {{ m.uploader_username }}</span>
+            <span style="margin-left:auto;color:var(--yellow);font-size:11px;font-weight:700;">★ {{ m.avg_rating }}</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;">
+            {% for loader in m.loaders[:2] %}
+            <span class="badge badge-sm loader-{{ loader.lower() }}">{{ loader }}</span>
+            {% endfor %}
+          </div>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+</div>
+
+<style>
+.following-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+.following-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.18s;
+}
+.following-card:hover {
+  border-color: rgba(139,92,246,0.25);
+  background: rgba(139,92,246,0.05);
+  transform: translateY(-1px);
+}
+.following-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.08);
+}
+.following-info { flex: 1; min-width: 0; }
+.following-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.following-username {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 1px;
+}
+.following-followers-badge {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--text3);
+  flex-shrink: 0;
+}
+
+.bookmarked-mods-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px;
+}
+.bookmarked-mod-card {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.18s;
+  align-items: center;
+}
+.bookmarked-mod-card:hover {
+  border-color: rgba(250,80,80,0.2);
+  background: rgba(250,80,80,0.04);
+  transform: translateY(-1px);
+}
+.bookmarked-mod-thumb {
+  width: 64px;
+  height: 44px;
+  border-radius: 7px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.04);
+}
+.bookmarked-mod-thumb img { width:100%;height:100%;object-fit:cover; }
+.bookmarked-mod-thumb-placeholder {
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  background: linear-gradient(135deg,rgba(250,80,80,0.08),rgba(250,80,80,0.02));
+}
+.bookmarked-mod-thumb-placeholder svg { width:18px;height:18px;stroke:var(--border); }
+.bookmarked-mod-info { flex: 1; min-width: 0; }
+.bookmarked-mod-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.bookmarked-mod-meta {
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.otp-boxes {
+  display: flex;
+  gap: 8px;
+}
+.otp-box {
+  width: 40px;
+  height: 46px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--bg3);
+  border: 1.5px solid var(--border2);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s;
+  caret-color: transparent;
+}
+.otp-box:focus {
+  border-color: var(--primary, #fa5050);
+  background: rgba(250,80,80,0.04);
+}
+</style>
+
+<script>
+const labels = {{ chart_labels | tojson }};
+const viewsData = {{ chart_views | tojson }};
+const dlData = {{ chart_downloads | tojson }};
+
+function makeGradient(ctx, color1, color2) {
+  const g = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+  g.addColorStop(0, color1);
+  g.addColorStop(1, color2);
+  return g;
+}
+
+const actCtx = document.getElementById('activityChart').getContext('2d');
+const viewGrad = makeGradient(actCtx, 'rgba(96,165,250,0.35)', 'rgba(96,165,250,0.01)');
+const dlGradA = makeGradient(actCtx, 'rgba(74,222,128,0.25)', 'rgba(74,222,128,0.01)');
+
+new Chart(actCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [
+      {
+        label: 'Views',
+        data: viewsData,
+        borderColor: '#60a5fa',
+        backgroundColor: viewGrad,
+        borderWidth: 2.5,
+        tension: 0.42,
+        fill: true,
+        pointRadius: 3,
+        pointBackgroundColor: '#60a5fa',
+        pointHoverRadius: 5,
+      },
+      {
+        label: 'Downloads',
+        data: dlData,
+        borderColor: '#4ade80',
+        backgroundColor: dlGradA,
+        borderWidth: 2.5,
+        tension: 0.42,
+        fill: true,
+        pointRadius: 3,
+        pointBackgroundColor: '#4ade80',
+        pointHoverRadius: 5,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: { labels: { color: '#a0a0b0', font: { size: 12 }, boxWidth: 12, boxHeight: 12 } },
+      tooltip: {
+        backgroundColor: 'rgba(14,14,22,0.95)',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        titleColor: '#f0f0f5',
+        bodyColor: '#a0a0b0',
+        padding: 12,
+      }
+    },
+    scales: {
+      x: {
+        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+        ticks: { color: '#606070', font: { size: 11 } }
+      },
+      y: {
+        grid: { color: 'rgba(255,255,255,0.04)', drawBorder: false },
+        ticks: { color: '#606070', font: { size: 11 }, precision: 0 },
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+const dlCtx = document.getElementById('dlChart').getContext('2d');
+const dlGrad2 = makeGradient(dlCtx, 'rgba(250,80,80,0.3)', 'rgba(250,80,80,0.01)');
+new Chart(dlCtx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Downloads',
+      data: dlData,
+      borderColor: 'rgb(250,80,80)',
+      backgroundColor: dlGrad2,
+      borderWidth: 2.5,
+      tension: 0.42,
+      fill: true,
+      pointRadius: 2,
+      pointBackgroundColor: 'rgb(250,80,80)',
+      pointHoverRadius: 5,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(14,14,22,0.95)',
+        borderColor: 'rgba(255,255,255,0.1)',
+        borderWidth: 1,
+        titleColor: '#f0f0f5',
+        bodyColor: '#a0a0b0',
+        padding: 10,
+      }
+    },
+    scales: {
+      x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#606070', font: { size: 10 } } },
+      y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#606070', font: { size: 10 }, precision: 0 }, beginAtZero: true }
+    }
+  }
+});
+
+// ── OTP boxes helper ─────────────────────────────────────
+function initOtpBoxes(containerId) {
+  var boxes = document.querySelectorAll('#' + containerId + ' .otp-box');
+  boxes.forEach(function(box, i) {
+    box.addEventListener('input', function() {
+      box.value = box.value.replace(/[^0-9]/g, '').slice(-1);
+      if (box.value && i < boxes.length - 1) boxes[i + 1].focus();
+    });
+    box.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !box.value && i > 0) boxes[i - 1].focus();
+    });
+    box.addEventListener('paste', function(e) {
+      e.preventDefault();
+      var txt = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '');
+      boxes.forEach(function(b, j) { b.value = txt[j] || ''; });
+      var last = Math.min(txt.length, boxes.length) - 1;
+      if (last >= 0) boxes[last].focus();
+    });
+  });
+}
+function getOtpValue(containerId) {
+  return Array.from(document.querySelectorAll('#' + containerId + ' .otp-box')).map(function(b) { return b.value; }).join('');
+}
+function clearOtpBoxes(containerId) {
+  document.querySelectorAll('#' + containerId + ' .otp-box').forEach(function(b) { b.value = ''; });
+}
+function startCountdown(spanId, btnId, seconds, onDone) {
+  var span = document.getElementById(spanId);
+  var btn = document.getElementById(btnId);
+  if (btn) btn.disabled = true;
+  var left = seconds || 60;
+  if (span) span.textContent = left;
+  var t = setInterval(function() {
+    left--;
+    if (span) span.textContent = left;
+    if (left <= 0) {
+      clearInterval(t);
+      if (btn) { btn.disabled = false; btn.style.color = ''; }
+      if (onDone) onDone();
+    }
+  }, 1000);
+}
+
+// ── Add Email panel ───────────────────────────────────────
+window.emailAddPanel = function() {
+  var p = document.getElementById('email-add-panel');
+  var btn = document.getElementById('email-add-btn');
+  if (!p) return;
+  var open = p.style.display !== 'none';
+  p.style.display = open ? 'none' : 'block';
+  if (!open) {
+    initOtpBoxes('email-otp-boxes');
+    if (btn) btn.textContent = 'Cancel';
+  } else {
+    if (btn) btn.textContent = 'Add Email';
+  }
+};
+window.submitAddEmail = async function() {
+  var email = (document.getElementById('add-email-input') || {}).value || '';
+  var errEl = document.getElementById('add-email-err');
+  var btn = document.getElementById('add-email-btn');
+  if (!email) { if (errEl) { errEl.textContent = 'Enter an email address'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/account/add-email', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({email: email}) });
+    var d = await r.json();
+    if (d.success) {
+      if (errEl) errEl.style.display = 'none';
+      document.getElementById('email-otp-panel').style.display = 'block';
+      startCountdown('email-countdown', 'email-resend-btn', 60);
+      document.querySelector('#email-otp-boxes .otp-box').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed'; errEl.style.display = 'block'; }
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.submitVerifyEmail = async function() {
+  var code = getOtpValue('email-otp-boxes');
+  var errEl = document.getElementById('verify-email-err');
+  var btn = document.getElementById('verify-email-btn');
+  if (code.length < 6) { if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/account/verify-email', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({otp_code: code}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Email verified!', 'success');
+      setTimeout(function() { location.reload(); }, 900);
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Invalid code'; errEl.style.display = 'block'; }
+      clearOtpBoxes('email-otp-boxes');
+      document.querySelector('#email-otp-boxes .otp-box').focus();
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+
+// ── Verify existing email panel ───────────────────────────
+window.emailVerifyPanel = function() {
+  var p = document.getElementById('email-verify-panel');
+  var btn = document.getElementById('email-verify-btn');
+  if (!p) return;
+  var open = p.style.display !== 'none';
+  p.style.display = open ? 'none' : 'block';
+  if (!open) {
+    initOtpBoxes('ev-otp-boxes');
+    if (btn) btn.textContent = 'Cancel';
+  } else {
+    if (btn) btn.textContent = 'Verify Email';
+  }
+};
+window.sendVerifyOtp = async function() {
+  var btn = document.getElementById('send-verify-otp-btn');
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'verify_email'}) });
+    var d = await r.json();
+    if (d.success) {
+      document.getElementById('ev-otp-panel').style.display = 'block';
+      if (btn) btn.style.display = 'none';
+      startCountdown('ev-countdown', 'ev-resend-btn', 60);
+      document.querySelector('#ev-otp-boxes .otp-box').focus();
+    } else {
+      if (typeof showToast === 'function') showToast(d.error || 'Failed to send code', 'error');
+      if (btn) btn.disabled = false;
+    }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); if (btn) btn.disabled = false; }
+};
+window.submitEVOtp = async function() {
+  var code = getOtpValue('ev-otp-boxes');
+  var errEl = document.getElementById('ev-err');
+  var btn = document.getElementById('ev-verify-btn');
+  if (code.length < 6) { if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/account/verify-email', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({otp_code: code}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Email verified!', 'success');
+      setTimeout(function() { location.reload(); }, 900);
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Invalid code'; errEl.style.display = 'block'; }
+      clearOtpBoxes('ev-otp-boxes');
+      document.querySelector('#ev-otp-boxes .otp-box').focus();
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.resendEmailOtp = async function(purpose, isEv) {
+  var payload = purpose === 'verify_email' && !isEv
+    ? JSON.stringify({purpose: purpose, email: (document.getElementById('add-email-input') || {}).value || ''})
+    : JSON.stringify({purpose: purpose});
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: payload });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Code resent!', 'success');
+      if (isEv) startCountdown('ev-countdown', 'ev-resend-btn', 60);
+      else startCountdown('email-countdown', 'email-resend-btn', 60);
+    } else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+
+// ── Change / Set Password ─────────────────────────────────
+window.startChangePassword = async function() {
+  var hasPwField = !!document.getElementById('cpw-current');
+  var current = hasPwField ? (document.getElementById('cpw-current').value || '') : '';
+  var newPw = (document.getElementById('cpw-new') || {}).value || '';
+  var cfm = (document.getElementById('cpw-confirm') || {}).value || '';
+  var errEl = document.getElementById('cpw-err');
+  if ((hasPwField && !current) || !newPw || !cfm) {
+    if (errEl) { errEl.textContent = 'Fill in all fields'; errEl.style.display = 'block'; } return;
+  }
+  if (newPw !== cfm) {
+    if (errEl) { errEl.textContent = 'Passwords do not match'; errEl.style.display = 'block'; } return;
+  }
+  if (newPw.length < 6) {
+    if (errEl) { errEl.textContent = 'New password must be at least 6 characters'; errEl.style.display = 'block'; } return;
+  }
+  if (errEl) errEl.style.display = 'none';
+  var btn = document.getElementById('cpw-btn');
+  {% if profile.email_verified %}
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending code...'; }
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'change_password'}) });
+    var d = await r.json();
+    if (d.success) {
+      document.getElementById('cpw-fields').style.display = 'none';
+      document.getElementById('cpw-otp-section').style.display = 'block';
+      initOtpBoxes('cpw-otp-boxes');
+      startCountdown('cpw-countdown', 'cpw-resend-btn', 60);
+      document.querySelector('#cpw-otp-boxes .otp-box').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed to send code'; errEl.style.display = 'block'; }
+      if (btn) { btn.disabled = false; btn.textContent = '{% if profile.password %}Change Password{% else %}Set Password{% endif %}'; }
+    }
+  } catch(e) {
+    if (errEl) { errEl.textContent = 'Network error. Try again.'; errEl.style.display = 'block'; }
+    if (btn) { btn.disabled = false; btn.textContent = '{% if profile.password %}Change Password{% else %}Set Password{% endif %}'; }
+  }
+  {% else %}
+  confirmChangePassword();
+  {% endif %}
+};
+window.confirmChangePassword = async function() {
+  var hasPwField = !!document.getElementById('cpw-current');
+  var current = hasPwField ? (document.getElementById('cpw-current').value || '') : '';
+  var newPw = (document.getElementById('cpw-new') || {}).value || '';
+  var cfm = (document.getElementById('cpw-confirm') || {}).value || '';
+  var otpCode = document.getElementById('cpw-otp-boxes') ? getOtpValue('cpw-otp-boxes') : '';
+  var errEl = document.getElementById('cpw-otp-err');
+  var btn = document.getElementById('cpw-submit-btn');
+  {% if profile.email_verified %}
+  if (otpCode.length < 6) {
+    if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return;
+  }
+  {% endif %}
+  if (btn) btn.disabled = true;
+  if (errEl) errEl.style.display = 'none';
+  var body = { new_password: newPw, confirm_password: cfm };
+  if (hasPwField && current) body.current_password = current;
+  if (otpCode) body.otp_code = otpCode;
+  try {
+    var r = await fetch('/api/change-password', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Password changed!', 'success');
+      cancelChangePassword();
+      setTimeout(function() { location.reload(); }, 1200);
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed'; errEl.style.display = 'block'; }
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.cancelChangePassword = function() {
+  document.getElementById('cpw-fields').style.display = 'flex';
+  document.getElementById('cpw-otp-section').style.display = 'none';
+  var btn = document.getElementById('cpw-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '{% if profile.password %}Change Password{% else %}Set Password{% endif %}'; }
+  var e1 = document.getElementById('cpw-err'); if (e1) e1.style.display = 'none';
+  var e2 = document.getElementById('cpw-otp-err'); if (e2) e2.style.display = 'none';
+  if (document.getElementById('cpw-current')) document.getElementById('cpw-current').value = '';
+  if (document.getElementById('cpw-new')) document.getElementById('cpw-new').value = '';
+  if (document.getElementById('cpw-confirm')) document.getElementById('cpw-confirm').value = '';
+  if (document.getElementById('cpw-otp-boxes')) clearOtpBoxes('cpw-otp-boxes');
+};
+window.resendCpwOtp = async function() {
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'change_password'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Code resent!', 'success');
+      startCountdown('cpw-countdown', 'cpw-resend-btn', 60);
+      if (document.getElementById('cpw-otp-boxes')) clearOtpBoxes('cpw-otp-boxes');
+    } else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+
+// ── Linked accounts ──────────────────────────────────────
+
+// ─ Google ─
+window.unlinkGooglePanel = function() {
+  var panel = document.getElementById('google-otp-panel');
+  var btn = document.getElementById('google-disconnect-btn');
+  if (!panel) return;
+  var open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (btn) btn.textContent = open ? 'Disconnect' : 'Cancel';
+};
+window.googleOtpSend = async function() {
+  var errEl = document.getElementById('google-otp-err');
+  var btn = document.getElementById('google-otp-send-btn');
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'unlink_google'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (errEl) errEl.style.display = 'none';
+      document.getElementById('google-otp-boxes-panel').style.display = 'block';
+      startCountdown('google-otp-countdown', 'google-otp-resend-btn', 60);
+      initOtpBoxes('google-otp-boxes');
+      document.querySelector('#google-otp-boxes .otp-box').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed'; errEl.style.display = 'block'; }
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.googleOtpSubmit = async function() {
+  var code = getOtpValue('google-otp-boxes');
+  var errEl = document.getElementById('google-otp-verify-err');
+  var btn = document.getElementById('google-otp-verify-btn');
+  if (code.length < 6) { if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/account/unlink-google', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({otp_code: code}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Google disconnected', 'success');
+      setTimeout(function() { location.reload(); }, 900);
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Invalid code'; errEl.style.display = 'block'; }
+      clearOtpBoxes('google-otp-boxes');
+      document.querySelector('#google-otp-boxes .otp-box').focus();
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.googleOtpResend = async function() {
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'unlink_google'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Code resent!', 'success');
+      startCountdown('google-otp-countdown', 'google-otp-resend-btn', 60);
+      clearOtpBoxes('google-otp-boxes');
+    } else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+window.unlinkGoogleDirect = async function() {
+  try {
+    var r = await fetch('/api/account/unlink-google', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({}) });
+    var d = await r.json();
+    if (d.success) { if (typeof showToast === 'function') showToast('Google disconnected', 'success'); setTimeout(function() { location.reload(); }, 900); }
+    else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+
+// ─ Discord ─
+window.unlinkDiscord = async function() {
+  if (!confirm('Disconnect your Discord account?')) return;
+  try {
+    var r = await fetch('/api/account/unlink-discord', { method: 'POST' });
+    var d = await r.json();
+    if (d.success) { if (typeof showToast === 'function') showToast('Discord disconnected', 'success'); setTimeout(function() { location.reload(); }, 900); }
+    else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+
+// ─ Remove Email (OTP-gated) ─
+window.removeEmailPanel = function() {
+  var panel = document.getElementById('remove-email-panel');
+  var btn = document.getElementById('email-remove-btn');
+  if (!panel) return;
+  var open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (btn) btn.textContent = open ? 'Remove' : 'Cancel';
+  if (!open) {
+    var addPanel = document.getElementById('email-add-panel');
+    if (addPanel) addPanel.style.display = 'none';
+    var changePanel = document.getElementById('email-change-panel');
+    if (changePanel) changePanel.style.display = 'none';
+    initOtpBoxes('re-otp-boxes');
+  }
+};
+window.reSendOtp = async function() {
+  var errEl = document.getElementById('re-err');
+  var btn = document.getElementById('re-send-btn');
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'remove_email'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (errEl) errEl.style.display = 'none';
+      document.getElementById('re-otp-panel').style.display = 'block';
+      startCountdown('re-countdown', 're-resend-btn', 60);
+      initOtpBoxes('re-otp-boxes');
+      document.querySelector('#re-otp-boxes .otp-box').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed'; errEl.style.display = 'block'; }
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.reSubmitOtp = async function() {
+  var code = getOtpValue('re-otp-boxes');
+  var errEl = document.getElementById('re-verify-err');
+  var btn = document.getElementById('re-verify-btn');
+  if (code.length < 6) { if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/account/remove-email', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({otp_code: code}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Email removed', 'success');
+      setTimeout(function() { location.reload(); }, 900);
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Invalid code'; errEl.style.display = 'block'; }
+      clearOtpBoxes('re-otp-boxes');
+      document.querySelector('#re-otp-boxes .otp-box').focus();
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.reResendOtp = async function() {
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'remove_email'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Code resent!', 'success');
+      startCountdown('re-countdown', 're-resend-btn', 60);
+      clearOtpBoxes('re-otp-boxes');
+    } else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+
+// ─ Change Email (3-step: verify current → enter new → verify new) ─
+var _ceAuthToken = '';
+var _ceNewEmail = '';
+
+window.changeEmailPanel = function() {
+  var panel = document.getElementById('email-change-panel');
+  var btn = document.getElementById('email-change-btn');
+  if (!panel) return;
+  var open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (btn) btn.textContent = open ? 'Change' : 'Cancel';
+  if (!open) {
+    _ceAuthToken = ''; _ceNewEmail = '';
+    var addPanel = document.getElementById('email-add-panel');
+    if (addPanel) addPanel.style.display = 'none';
+    var rePanel = document.getElementById('remove-email-panel');
+    if (rePanel) rePanel.style.display = 'none';
+    var evPanel = document.getElementById('email-verify-panel');
+    if (evPanel) evPanel.style.display = 'none';
+    var s1Otp = document.getElementById('ce-step1-otp-panel');
+    if (s1Otp) { s1Otp.style.display = 'none'; clearOtpBoxes('ce-step1-otp-boxes'); }
+    var s2 = document.getElementById('ce-step2');
+    {% if profile.email and profile.email_verified %}if (s2) s2.style.display = 'none';{% endif %}
+    var s3 = document.getElementById('ce-step3');
+    if (s3) s3.style.display = 'none';
+    if (document.getElementById('ce-step1-err')) document.getElementById('ce-step1-err').style.display = 'none';
+    if (document.getElementById('ce-step2-err')) document.getElementById('ce-step2-err').style.display = 'none';
+    if (document.getElementById('ce-step3-err')) document.getElementById('ce-step3-err').style.display = 'none';
+    if (document.getElementById('ce-new-email-input')) document.getElementById('ce-new-email-input').value = '';
+    initOtpBoxes('ce-step1-otp-boxes');
+    initOtpBoxes('ce-step3-otp-boxes');
+  }
+};
+window.ceSendCurrentOtp = async function() {
+  var errEl = document.getElementById('ce-step1-err');
+  var btn = document.getElementById('ce-step1-send-btn');
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'verify_current_email'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (errEl) errEl.style.display = 'none';
+      document.getElementById('ce-step1-otp-panel').style.display = 'block';
+      startCountdown('ce-step1-countdown', 'ce-step1-resend-btn', 60);
+      initOtpBoxes('ce-step1-otp-boxes');
+      document.querySelector('#ce-step1-otp-boxes .otp-box').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed'; errEl.style.display = 'block'; }
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.ceSubmitCurrentOtp = async function() {
+  var code = getOtpValue('ce-step1-otp-boxes');
+  var errEl = document.getElementById('ce-step1-verify-err');
+  var btn = document.getElementById('ce-step1-verify-btn');
+  if (code.length < 6) { if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/account/authorize-email-change', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({otp_code: code}) });
+    var d = await r.json();
+    if (d.success) {
+      _ceAuthToken = d.auth_token || '';
+      document.getElementById('ce-step1').style.display = 'none';
+      document.getElementById('ce-step2').style.display = 'block';
+      if (document.getElementById('ce-new-email-input')) document.getElementById('ce-new-email-input').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Invalid code'; errEl.style.display = 'block'; }
+      clearOtpBoxes('ce-step1-otp-boxes');
+      document.querySelector('#ce-step1-otp-boxes .otp-box').focus();
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.ceResendCurrentOtp = async function() {
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'verify_current_email'}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Code resent!', 'success');
+      startCountdown('ce-step1-countdown', 'ce-step1-resend-btn', 60);
+      clearOtpBoxes('ce-step1-otp-boxes');
+    } else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+window.ceSendNewOtp = async function() {
+  var email = (document.getElementById('ce-new-email-input') || {}).value || '';
+  var errEl = document.getElementById('ce-step2-err');
+  var btn = document.getElementById('ce-step2-send-btn');
+  if (!email) { if (errEl) { errEl.textContent = 'Enter a new email address'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'change_email', email: email}) });
+    var d = await r.json();
+    if (d.success) {
+      _ceNewEmail = email;
+      if (errEl) errEl.style.display = 'none';
+      document.getElementById('ce-step2').style.display = 'none';
+      document.getElementById('ce-step3').style.display = 'block';
+      startCountdown('ce-step3-countdown', 'ce-step3-resend-btn', 60);
+      initOtpBoxes('ce-step3-otp-boxes');
+      document.querySelector('#ce-step3-otp-boxes .otp-box').focus();
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Failed'; errEl.style.display = 'block'; }
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.ceConfirmChange = async function() {
+  var code = getOtpValue('ce-step3-otp-boxes');
+  var errEl = document.getElementById('ce-step3-err');
+  var btn = document.getElementById('ce-step3-verify-btn');
+  if (code.length < 6) { if (errEl) { errEl.textContent = 'Enter all 6 digits'; errEl.style.display = 'block'; } return; }
+  if (btn) btn.disabled = true;
+  try {
+    var body = {email: _ceNewEmail, otp_code: code};
+    if (_ceAuthToken) body.auth_token = _ceAuthToken;
+    var r = await fetch('/api/account/confirm-change-email', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Email updated!', 'success');
+      setTimeout(function() { location.reload(); }, 900);
+    } else {
+      if (errEl) { errEl.textContent = d.error || 'Invalid code'; errEl.style.display = 'block'; }
+      clearOtpBoxes('ce-step3-otp-boxes');
+      document.querySelector('#ce-step3-otp-boxes .otp-box').focus();
+    }
+  } catch(e) { if (errEl) { errEl.textContent = 'Network error'; errEl.style.display = 'block'; } }
+  if (btn) btn.disabled = false;
+};
+window.ceResendNewOtp = async function() {
+  try {
+    var r = await fetch('/api/send-otp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({purpose: 'change_email', email: _ceNewEmail}) });
+    var d = await r.json();
+    if (d.success) {
+      if (typeof showToast === 'function') showToast('Code resent!', 'success');
+      startCountdown('ce-step3-countdown', 'ce-step3-resend-btn', 60);
+      clearOtpBoxes('ce-step3-otp-boxes');
+    } else { if (typeof showToast === 'function') showToast(d.error || 'Failed', 'error'); }
+  } catch(e) { if (typeof showToast === 'function') showToast('Network error', 'error'); }
+};
+
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  if (params.get('discord_linked') === '1' && typeof showToast === 'function') {
+    showToast('Discord connected successfully!', 'success');
+    history.replaceState({}, '', window.location.pathname);
+  }
+  if (params.get('discord_error') === 'already_linked' && typeof showToast === 'function') {
+    showToast('This Discord account is already linked to another account.', 'error');
+    history.replaceState({}, '', window.location.pathname);
+  }
+})();
+
+// ── API Token management ─────────────────────────────────
+(function() {
+  var field = document.getElementById('api-token-field');
+  var genBtn = document.getElementById('api-gen-btn');
+  var genLbl = document.getElementById('api-gen-label');
+  var eyeIcon = document.getElementById('api-eye-icon');
+  var _tokenVisible = false;
+
+  // Try to fetch existing token on load
+  fetch('/api/v2/token', { method: 'GET' })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success && d.token) {
+        if (field) field.value = d.token;
+        if (genLbl) genLbl.textContent = 'Regenerate';
+      }
+    }).catch(function() {});
+
+  window._generateApiToken = function() {
+    if (genBtn) genBtn.disabled = true;
+    var existing = field && field.value;
+    var endpoint = existing ? '/api/v2/token/regenerate' : '/api/v2/token';
+    fetch(endpoint, { method: 'POST' })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (genBtn) genBtn.disabled = false;
+        if (d.success && d.token) {
+          if (field) field.value = d.token;
+          if (genLbl) genLbl.textContent = 'Regenerate';
+          if (_tokenVisible && field) field.type = 'text';
+          if (typeof showToast === 'function') showToast('API token generated!', 'success');
+        } else {
+          if (typeof showToast === 'function') showToast(d.error || 'Failed to generate token', 'error');
+        }
+      }).catch(function() {
+        if (genBtn) genBtn.disabled = false;
+        if (typeof showToast === 'function') showToast('Network error', 'error');
+      });
+  };
+
+  window._toggleApiTokenVisibility = function() {
+    if (!field) return;
+    _tokenVisible = !_tokenVisible;
+    field.type = _tokenVisible ? 'text' : 'password';
+    if (eyeIcon) {
+      eyeIcon.innerHTML = _tokenVisible
+        ? '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path><line x1="1" y1="1" x2="23" y2="23"></line>'
+        : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+    }
+  };
+
+  window._copyApiToken = function() {
+    if (!field || !field.value) return;
+    navigator.clipboard.writeText(field.value).then(function() {
+      if (typeof showToast === 'function') showToast('Token copied to clipboard!', 'success');
+    }).catch(function() {
+      field.select(); document.execCommand('copy');
+      if (typeof showToast === 'function') showToast('Token copied!', 'success');
+    });
+  };
+})();
+</script>
+{% endblock %}
