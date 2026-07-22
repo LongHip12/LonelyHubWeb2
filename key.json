@@ -1,0 +1,22 @@
+{
+  "keys": {
+    "LonelyHub-5d7170a-7be2-24d0-b9ef-a0b1-70059": {
+      "key": "LonelyHub-5d7170a-7be2-24d0-b9ef-a0b1-70059",
+      "type": "6hours",
+      "hwid": "",
+      "ip": "127.0.0.1",
+      "createdAt": 1777282038612,
+      "expireAt": 1777303638612,
+      "duration": "6hours",
+      "userId": "user_e51031a32083",
+      "method": "linkvertise",
+      "lastExtendedAt": 0,
+      "lastResetHwidAt": 0,
+      "resetCount": 0,
+      "extendCount": 0,
+      "mismatchCount": 0,
+      "boundIp": "",
+      "boundAt": 0
+    }
+  }
+}
